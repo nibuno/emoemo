@@ -35,7 +35,7 @@ docker compose exec db /bin/bash
 コンテナのビルド後に以下コマンドを実行
 
 ```shell
-$ docker compose run web django-admin startproject application .
+docker compose run web django-admin startproject application .
 ```
 
 ```shell
