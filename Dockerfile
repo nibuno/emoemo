@@ -10,3 +10,8 @@ COPY requirements/requirements-dev.txt /emoemo/
 RUN pip install -r requirements.txt
 RUN pip install -r requirements-dev.txt
 COPY . /emoemo/
+
+#NOTE: tailwindcssを利用するためにnode
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get update && \
+    apt-get install -y nodejs

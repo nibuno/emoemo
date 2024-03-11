@@ -41,3 +41,10 @@ docker compose run web django-admin startproject application .
 ```shell
 docker compose run web django-admin startapp emoemo
 ```
+
+```shell
+docker compose run web python manage.py tailwind init
+# NOTE: この前段階でnodejsのインストールが必要だったので実施
+docker compose run web python manage.py tailwind install
+docker compose run web python manage.py tailwind start
+```
