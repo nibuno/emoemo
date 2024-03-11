@@ -37,3 +37,7 @@ docker compose exec db /bin/bash
 ```shell
 $ docker compose run web django-admin startproject application .
 ```
+
+```shell
+docker compose run web django-admin startapp emoemo
+```
