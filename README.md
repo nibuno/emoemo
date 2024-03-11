@@ -3,6 +3,8 @@ emojiを作成するアプリケーションです。
 まだ作成中のため、何もできません。
 ここは備忘録、メモ帳として暫くは利用されます。
 
+.envファイルにはsettings.pyで利用する環境変数を記述しています。
+
 
 ## コンテナのビルド
 
@@ -33,5 +35,5 @@ docker compose exec db /bin/bash
 コンテナのビルド後に以下コマンドを実行
 
 ```shell
-$ docker compose run web django-admin startproject mysite .
+$ docker compose run web django-admin startproject application .
 ```
