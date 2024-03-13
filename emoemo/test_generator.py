@@ -1,5 +1,9 @@
 from emoemo.entity.emoji import Emoji
-from emoemo.infrastructure.generator import StandardGeneratorImpl, find_best_font_and_box, calc_y_axis
+from emoemo.infrastructure.generator import (
+    StandardGeneratorImpl,
+    find_best_font_and_box,
+    calc_y_axis,
+)
 from emoemo.use_case.emoji_use_case import EmojiUseCase
 import pytest
 
@@ -14,7 +18,7 @@ class TestStandardGeneratorImpl:
             generator.emoji_use_case.get_split_size(),
             generator.emoji_use_case.get_text(),
             generator.emoji_use_case.get_font(),
-            generator.emoji_use_case.get_base_size()
+            generator.emoji_use_case.get_base_size(),
         )[1] == (0, 23, 84, 100)
 
 
@@ -27,7 +31,7 @@ class TestStandardGeneratorImpl:
         ([98, 145, 146], 1, 49),  # 3行のケース 1行目
         ([98, 145, 146], 2, 170),  # 3行のケース 2行目
         ([98, 145, 146], 3, 316),  # 3行のケース 3行目
-    ]
+    ],
 )
 def test_calc_y_axis(bounding_bottoms, count, results):
     assert calc_y_axis(bounding_bottoms, count) == results

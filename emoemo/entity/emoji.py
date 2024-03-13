@@ -19,5 +19,6 @@ class Emoji:
         project_root = Path(__file__).parent.parent
         self.font: str = str(project_root / font)
 
+
 if __name__ == "__main__":
     emoji = Emoji("test")
