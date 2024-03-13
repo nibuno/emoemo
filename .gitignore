@@ -10,3 +10,4 @@ db.sqlite3
 data
 /.idea/emoemo.iml
 /application/.env
+/.idea/vcs.xml
