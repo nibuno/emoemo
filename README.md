@@ -48,3 +48,9 @@ docker compose run web python manage.py tailwind init
 docker compose run web python manage.py tailwind install
 docker compose run web python manage.py tailwind start
 ```
+
+## ruffの実行（format）
+
+```shell
+docker compose run web ruff format .
+```
