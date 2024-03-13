@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from entity.emoji import Emoji
-from infrastructure.generator import (
+from emoemo.entity.emoji import Emoji
+from emoemo.infrastructure.generator import (
     AutoFontSizeChangeGeneratorImpl,
     StandardGeneratorImpl,
 )
-from use_case.emoji_use_case import EmojiUseCase
+from emoemo.use_case.emoji_use_case import EmojiUseCase
 
 
 def main(input_text: str, auto_font_size: bool):

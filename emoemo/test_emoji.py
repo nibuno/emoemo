@@ -1,5 +1,5 @@
-from entity.emoji import Emoji
-from use_case.emoji_use_case import EmojiUseCase
+from emoemo.entity.emoji import Emoji
+from emoemo.use_case.emoji_use_case import EmojiUseCase
 
 
 class TestMakeSlackEmoji:

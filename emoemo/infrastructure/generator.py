@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from PIL import Image, ImageDraw, ImageFont
 
-from entity.bounding_box import BoundingBox
-from interface.image_generator import ImageGenerator
-from use_case.emoji_use_case import EmojiUseCase
+from emoemo.entity.bounding_box import BoundingBox
+from emoemo.interface.image_generator import ImageGenerator
+from emoemo.use_case.emoji_use_case import EmojiUseCase
 
 
 class StandardGeneratorImpl(ImageGenerator):

@@ -30,6 +30,7 @@
                 <h2 class="text-gray-900 text-lg title-font font-medium mb-2 w-32">select font</h2>
                 
                 <ul class="w-48 text-sm font-medium border rounded-lg">
+                  {% comment %} FIXME: フォントを選べるようにする {% endcomment %}
                     <li class="w-full border-b rounded-t-lg">
                         <div class="flex items-center ps-3">
                             <input id="list-radio-license" type="radio" value="" name="list-radio" class="w-4 h-4" checked>
@@ -62,10 +63,23 @@
             <div class="p-4 md:w-1/3 flex">
               <div class="flex-grow pl-6">
                 <h2 class="text-gray-900 text-lg title-font font-medium mb-2 w-32">output emoji</h2>
-                <img src="{% static 'emoji.png' %}" alt="emoji" class="w-32 h-32 mb-8">
-                <a href="{% static 'emoji.png' %}" download="{% static 'emoji.png' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" disabled>
-                  download
-                </a>
+                {% if font_text %}
+                  {% comment %} FIXME: TemplateではなくViewで実施したい {% endcomment %}
+                  {% comment %} FIXME: 改行した文字を表示・ダウンロードできていないので修正する {% endcomment %}
+                  <img src="{% static font_text|add:'.png' %}" alt="emoji" class="w-32 h-32 mb-8">
+                  <a href="{% static font_text|add:'.png' %}" download="{% static 'emoji.png' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    download
+                  </a>
+                {% else %}
+                  <div class="w-32 h-32 mb-8 border-2">
+                    <div>
+                      emojiがここに表示されるよ！
+                    </div>
+                  </div>
+                  <a href="{% static 'emoji.png' %}" download="{% static 'emoji.png' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" disabled>
+                    download
+                  </a>
+                {% endif %}
               </div>
             </div>
           </div>

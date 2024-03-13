@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from typing import Tuple
+from application.settings import STATIC_URL
 
-from entity.emoji import Emoji
+from emoemo.entity.emoji import Emoji
 
 
 class EmojiUseCase:
@@ -12,7 +13,9 @@ class EmojiUseCase:
         file_stem: str = "_".join(self.emoji.text.splitlines())
         file_name: str = file_stem + self.emoji.file_extension
         # TODO: saveディレクトリが存在する前提のコードになっている
-        save_file_path: str = "save/" + file_name
+        # FIXME: 絶対パスなので相対パスに書き換えたい
+        save_file_path: str = "/emoemo/emoemo/static/" + file_name
+        print(save_file_path)
         return save_file_path
 
     def get_background_color(self) -> Tuple[int, int, int, int]:
