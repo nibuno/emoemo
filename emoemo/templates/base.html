@@ -66,8 +66,8 @@
                 {% if font_text %}
                   {% comment %} FIXME: TemplateではなくViewで実施したい {% endcomment %}
                   {% comment %} FIXME: 改行した文字を表示・ダウンロードできていないので修正する {% endcomment %}
-                  <img src="{% static font_text|add:'.png' %}" alt="emoji" class="w-32 h-32 mb-8">
-                  <a href="{% static font_text|add:'.png' %}" download="{% static 'emoji.png' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                  <img src="{% static parsed_font_text|add:'.png' %}" alt="emoji" class="w-32 h-32 mb-8">
+                  <a href="{% static parsed_font_text|add:'.png' %}" download="{% static 'emoji.png' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     download
                   </a>
                 {% else %}

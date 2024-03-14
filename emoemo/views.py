@@ -5,7 +5,13 @@ from .main import main
 def index(request):
     font_text = request.GET.get("font-text")
 
+    parsed_font_text = None
+
     if font_text:
         main(font_text, auto_font_size=True)
 
-    return render(request, "base.html", {"font_text": font_text})
+        # font_textに改行文字が入っていたら_に変換して渡す
+        # e.g. せやかて\n工藤 -> せやかて_工藤
+        parsed_font_text = "_".join(font_text.splitlines())
+
+    return render(request, "base.html", {"font_text": font_text, "parsed_font_text": parsed_font_text})
