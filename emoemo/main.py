@@ -8,6 +8,7 @@ from emoemo.use_case.emoji_use_case import EmojiUseCase
 
 
 def main(input_text: str, auto_font_size: bool):
+    # FIXME: 背景色、フォントの色を変更できるようにする
     emoji = Emoji(input_text)
     emoji_use_case = EmojiUseCase(emoji)
     if auto_font_size:
