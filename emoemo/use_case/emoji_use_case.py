@@ -15,7 +15,6 @@ class EmojiUseCase:
         # TODO: saveディレクトリが存在する前提のコードになっている
         # FIXME: 絶対パスなので相対パスに書き換えたい
         save_file_path: str = "/emoemo/emoemo/static/" + file_name
-        print(save_file_path)
         return save_file_path
 
     def get_background_color(self) -> Tuple[int, int, int, int]:
