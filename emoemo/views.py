@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from .main import main
 
+
 def index(request):
     font_text = request.GET.get("font-text")
 
@@ -17,4 +18,12 @@ def index(request):
 
         parsed_font_text_png = parsed_font_text + ".png"
 
-    return render(request, "base.html", {"font_text": font_text, "parsed_font_text": parsed_font_text, "parsed_font_text_png": parsed_font_text_png})
+    return render(
+        request,
+        "base.html",
+        {
+            "font_text": font_text,
+            "parsed_font_text": parsed_font_text,
+            "parsed_font_text_png": parsed_font_text_png,
+        },
+    )
