@@ -7,9 +7,9 @@ from emoemo.infrastructure.generator import (
 from emoemo.use_case.emoji_use_case import EmojiUseCase
 
 
-def main(input_text: str, auto_font_size: bool):
+def main(input_text: str, auto_font_size: bool, font_color: str = "#000000"):
     # FIXME: 背景色、フォントの色を変更できるようにする
-    emoji = Emoji(input_text)
+    emoji = Emoji(input_text, font_color=font_color)
     emoji_use_case = EmojiUseCase(emoji)
     if auto_font_size:
         generator = AutoFontSizeChangeGeneratorImpl(emoji_use_case)
