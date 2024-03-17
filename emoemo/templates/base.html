@@ -41,8 +41,7 @@
                 </ul>
 
                 <label>
-                  {% comment %} FIXME: 受け取った色をデフォルトで表示できるようにする {% endcomment %}
-                  <input type="color" name="font-color">
+                  <input type="color" name="font-color" {% if font_color %} value="{{ font_color }}"{% endif %}>
                 </label>
               </div>
             </div>

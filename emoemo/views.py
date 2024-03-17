@@ -30,5 +30,6 @@ def index(request):
             "font_text": font_text,
             "parsed_font_text": parsed_font_text,
             "parsed_font_text_png": parsed_font_text_png,
+            "font_color": font_color,
         },
     )
