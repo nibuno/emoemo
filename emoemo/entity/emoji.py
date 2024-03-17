@@ -13,6 +13,7 @@ class Emoji:
     base_size: int = 128
 
     def __post_init__(self):
+        # TODO: フォントを引数として設定する
         font = "fonts/rounded-mplus-20150529/rounded-mplus-1c-black.ttf"
         # TODO: フォントのパスを相対パスにする必要がありそう
         #       Dockerに移行した際に失敗していた
