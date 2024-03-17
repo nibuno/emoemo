@@ -54,3 +54,10 @@ docker compose run web python manage.py tailwind start
 ```shell
 docker compose run web ruff format .
 ```
+
+
+## djlintの実行(format)
+
+```shell
+docker compose run web djlint . --reformat
+```
