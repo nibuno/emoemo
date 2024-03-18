@@ -5,16 +5,22 @@ from .main import main
 
 def index(request):
     font_text = request.GET.get("font-text")
+    # TODO: auto_font_sizeをクエリパラメータで受け取る
     font_color = request.GET.get("font-color")
 
     parsed_font_text_png = None
 
-    # FIXME: ネストしてしまっているので、リファクタリングする
+    main_args = {
+        "input_text": font_text,
+        "auto_font_size": True,
+        "font_color": font_color,
+    }
+
+    if font_color:
+        main_args["font_color"] = font_color
+
     if font_text:
-        if font_color:
-            main(font_text, auto_font_size=True, font_color=font_color)
-        else:
-            main(font_text, auto_font_size=True)
+        main(**main_args)
 
         # font_textに改行文字が入っていたら_に変換して渡す
         # e.g. せやかて\n工藤 -> せやかて_工藤
