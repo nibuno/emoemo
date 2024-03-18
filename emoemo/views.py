@@ -7,7 +7,6 @@ def index(request):
     font_text = request.GET.get("font-text")
     font_color = request.GET.get("font-color")
 
-    parsed_font_text = None
     parsed_font_text_png = None
 
     # FIXME: ネストしてしまっているので、リファクタリングする
@@ -28,7 +27,6 @@ def index(request):
         "base.html",
         {
             "font_text": font_text,
-            "parsed_font_text": parsed_font_text,
             "parsed_font_text_png": parsed_font_text_png,
             "font_color": font_color,
         },
