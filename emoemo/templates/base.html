@@ -13,9 +13,8 @@
     <body class="h-screen">
         <div class="text-gray-600 body-font shadow-md">
             <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center max-w-4xl">
-                <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-                    <a class="ml-3 text-xl" href="{% url 'index' %}">emoemo</a>
-                </a>
+                <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0 ml-3 text-xl"
+                   href="{% url 'index' %}">emoemo</a>
             </div>
         </div>
         <div class="container mx-auto flex flex-wrap p-5 flex-col items-center max-w-3xl">
@@ -69,9 +68,7 @@
                                 <div class="flex-grow pl-6">
                                     <h2 class="text-gray-900 text-lg title-font font-medium mb-2 w-32">output emoji</h2>
                                     {% if font_text %}
-                                        <img src="{% static emoji_img %}"
-                                             alt="emoji"
-                                             class="w-32 h-32 mb-8">
+                                        <img src="{% static emoji_img %}" alt="emoji" class="w-32 h-32 mb-8">
                                         <a href="{% static emoji_img %}"
                                            download="{% static emoji_img %}"
                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
