@@ -4,6 +4,16 @@
         url("../fonts/rounded-mplus-1c-black.ttf");
 }
 
+@font-face {
+    font-family: "rounded mplus 1c medium";
+    src:
+        url("../fonts/rounded-mplus-1c-medium.ttf");
+}
+
 .rounded-mplus-1c-black {
     font-family: "rounded mplus 1c black", sans-serif;
+}
+
+.rounded-mplus-1c-medium {
+    font-family: "rounded mplus 1c medium", sans-serif;
 }

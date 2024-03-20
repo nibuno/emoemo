@@ -28,18 +28,28 @@
                                 <div class="flex-grow pl-6">
                                     <h2 class="text-gray-900 text-lg title-font font-medium mb-2 w-32">select font</h2>
                                     <ul class="w-48 text-sm font-medium border rounded-lg">
-                                        {% comment %} FIXME: フォントを選べるようにする {% endcomment %}
                                         <li class="w-full border-b rounded-t-lg">
                                             <div class="flex items-center ps-3">
                                                 <input id="list-radio-license"
                                                        type="radio"
-                                                       value="rounded-mplus"
+                                                       value="rounded-mplus-1c-black"
                                                        name="font-name"
                                                        class="w-4 h-4"
                                                        checked>
                                                 <label for="list-radio-license"
                                                        class="w-full py-3 ms-2 text-sm font-medium rounded-mplus-1c-black">
-                                                    rounded-mplus
+                                                    rounded-mplus black
+                                                </label>
+                                            </div>
+                                            <div class="flex items-center ps-3">
+                                                <input id="rounded-mplus-medium"
+                                                       type="radio"
+                                                       value="rounded-mplus-1c-medium"
+                                                       name="font-name"
+                                                       class="w-4 h-4">
+                                                <label for="list-radio-license"
+                                                       class="w-full py-3 ms-2 text-sm font-medium rounded-mplus-1c-medium">
+                                                    rounded-mplus medium
                                                 </label>
                                             </div>
                                         </li>
@@ -130,6 +140,10 @@
             createButton.classList.add('hover:bg-blue-700');
         }
     });
+    
+    const fontName = '{{ font_name }}';
+    const fontNameRadio = document.querySelector(`input[value="${fontName}"]`);
+    fontNameRadio.checked = true;
     
     
 

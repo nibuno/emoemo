@@ -11,11 +11,9 @@ class Emoji:
     background_color: Tuple[int, int, int, int] = (0, 0, 0, 0)
     font_color: str = "#000000"
     base_size: int = 128
+    font_name: str = ""
 
     def __post_init__(self):
-        # TODO: フォントを引数として設定する
-        font = "fonts/rounded-mplus-20150529/rounded-mplus-1c-black.ttf"
-        # TODO: フォントのパスを相対パスにする必要がありそう
-        #       Dockerに移行した際に失敗していた
+        font = f"fonts/rounded-mplus-20150529/{self.font_name}.ttf"
         project_root = Path(__file__).parent.parent
         self.font: str = str(project_root / font)
