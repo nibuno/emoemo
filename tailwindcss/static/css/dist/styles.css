@@ -819,6 +819,10 @@ select {
   margin-bottom: 2rem;
 }
 
+.block {
+  display: block;
+}
+
 .flex {
   display: flex;
 }
@@ -833,6 +837,14 @@ select {
 
 .h-screen {
   height: 100vh;
+}
+
+.h-64 {
+  height: 16rem;
+}
+
+.h-0 {
+  height: 0px;
 }
 
 .w-32 {
