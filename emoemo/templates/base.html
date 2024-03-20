@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         {% tailwind_css %}
+        <link rel="stylesheet" href="{% static 'css/font.css' %}">
     </head>
     {% load django_browser_reload %}
     <body class="h-screen">
@@ -36,7 +37,10 @@
                                                        name="font-name"
                                                        class="w-4 h-4"
                                                        checked>
-                                                <label for="list-radio-license" class="w-full py-3 ms-2 text-sm font-medium">rounded-mplus</label>
+                                                <label for="list-radio-license"
+                                                       class="w-full py-3 ms-2 text-sm font-medium rounded-mplus-1c-black">
+                                                    rounded-mplus
+                                                </label>
                                             </div>
                                         </li>
                                     </ul>

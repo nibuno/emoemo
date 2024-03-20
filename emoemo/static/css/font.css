@@ -1,0 +1,9 @@
+@font-face {
+    font-family: "rounded mplus 1c black";
+    src:
+        url("../fonts/rounded-mplus-1c-black.ttf");
+}
+
+.rounded-mplus-1c-black {
+    font-family: "rounded mplus 1c black", sans-serif;
+}
