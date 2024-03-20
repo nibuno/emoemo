@@ -13,7 +13,7 @@ def main(
     font_color: str = "#000000",
     font_name: str = "rounded-mplus-1c-medium",
 ):
-    # FIXME: 背景色、フォントの色を変更できるようにする
+    # FIXME: 背景色を変更できるようにする
     emoji = Emoji(text=input_text, font_color=font_color, font_name=font_name)
     emoji_use_case = EmojiUseCase(emoji)
     if auto_font_size:
