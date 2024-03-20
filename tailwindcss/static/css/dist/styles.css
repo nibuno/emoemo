@@ -815,12 +815,16 @@ select {
   margin-inline-start: 0.5rem;
 }
 
-.mb-8 {
-  margin-bottom: 2rem;
+.box-border {
+  box-sizing: border-box;
 }
 
 .block {
   display: block;
+}
+
+.inline-block {
+  display: inline-block;
 }
 
 .flex {
@@ -837,14 +841,6 @@ select {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-64 {
-  height: 16rem;
-}
-
-.h-0 {
-  height: 0px;
 }
 
 .w-32 {
@@ -889,10 +885,6 @@ select {
 
 .justify-center {
   justify-content: center;
-}
-
-.justify-between {
-  justify-content: space-between;
 }
 
 .space-y-6 > :not([hidden]) ~ :not([hidden]) {
