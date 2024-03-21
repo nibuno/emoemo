@@ -987,6 +987,10 @@ select {
   padding-inline-start: 0.75rem;
 }
 
+.pl-8 {
+  padding-left: 2rem;
+}
+
 .text-center {
   text-align: center;
 }
