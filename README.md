@@ -61,3 +61,9 @@ docker compose run web ruff format .
 ```shell
 docker compose run web djlint . --reformat
 ```
+
+## pytestの実行
+
+```shell
+docker compose run web pytest
+```
