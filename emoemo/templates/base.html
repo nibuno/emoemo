@@ -109,41 +109,29 @@
     </body>
 </html>
 <script>
-    const createButton = document.getElementById('create-button');
-    const inputText = document.getElementById('input-text');
     
-    // FIXME: ボタンのdisabledを切り替える処理を関数化する
-    if (inputText.value === '') {
-        createButton.disabled = true;
-        createButton.classList.add('bg-gray-400');
-        createButton.classList.remove('bg-blue-500');
-        createButton.classList.remove('hover:bg-blue-700');
-    } else {
-        createButton.disabled = false;
-        createButton.classList.remove('bg-gray-400');
-        createButton.classList.add('bg-blue-500');
-        createButton.classList.add('hover:bg-blue-700');
-    }
-    
-    inputText.addEventListener('input', () => {
-        if (inputText.value === '') {
+    const toggleDisabled = () => {
+        const createButton = document.getElementById('create-button');
+        if (document.getElementById('input-text').value === '') {
             createButton.disabled = true;
             createButton.classList.add('bg-gray-400');
             createButton.classList.remove('bg-blue-500');
             createButton.classList.remove('hover:bg-blue-700');
-            
         } else {
             createButton.disabled = false;
             createButton.classList.remove('bg-gray-400');
             createButton.classList.add('bg-blue-500');
             createButton.classList.add('hover:bg-blue-700');
         }
+    };
+    
+    toggleDisabled();
+    document.getElementById('input-text').addEventListener('input', () => {
+        toggleDisabled();
     });
     
     const fontName = '{{ font_name }}';
     const fontNameRadio = document.querySelector(`input[value="${fontName}"]`);
     fontNameRadio.checked = true;
-    
-    
 
 </script>
