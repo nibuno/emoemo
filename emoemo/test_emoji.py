@@ -6,7 +6,7 @@ class TestMakeSlackEmoji:
     def test_get_save_file_path(self):
         emoji = Emoji("test")
         emoji_use_case = EmojiUseCase(emoji)
-        assert emoji_use_case.get_save_file_path() == "save/test.png"
+        assert emoji_use_case.get_save_file_path() == "/emoemo/emoemo/static/test.png"
 
     def test_get_split_size(self):
         emoji = Emoji("test")
