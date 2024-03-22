@@ -131,7 +131,13 @@
     });
     
     const fontName = '{{ font_name }}';
-    const fontNameRadio = document.querySelector(`input[value="${fontName}"]`);
-    fontNameRadio.checked = true;
+    if (fontName === 'None') {
+        const fontNameRadio = document.querySelector(`input[value="rounded-mplus-1c-black"]`);
+        fontNameRadio.checked = true;
+    }
+    else {
+        const fontNameRadio = document.querySelector(`input[value="${fontName}"]`);
+        fontNameRadio.checked = true;
+    }
 
 </script>
