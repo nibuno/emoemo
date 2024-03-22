@@ -5,7 +5,7 @@ from emoemo.entity.bounding_box import BoundingBox
 from emoemo.use_case.emoji_use_case import EmojiUseCase
 
 
-class StandardGeneratorImpl:
+class StandardGenerator:
     def __init__(self, emoji_use_case: EmojiUseCase):
         self.emoji_use_case: EmojiUseCase = emoji_use_case
 
@@ -42,7 +42,7 @@ class StandardGeneratorImpl:
         image.save(fp=self.emoji_use_case.get_save_file_path())
 
 
-class AutoFontSizeChangeGeneratorImpl:
+class AutoFontSizeChangeGenerator:
     def __init__(self, emoji_use_case: EmojiUseCase):
         self.emoji_use_case: EmojiUseCase = emoji_use_case
 

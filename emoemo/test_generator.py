@@ -1,6 +1,6 @@
 from emoemo.entity.emoji import Emoji
 from emoemo.infrastructure.generator import (
-    StandardGeneratorImpl,
+    StandardGenerator,
     find_best_font_and_box,
     calc_y_axis,
 )
@@ -14,7 +14,7 @@ class TestStandardGeneratorImpl:
     def test_find_best_font_and_box(self):
         emoji = Emoji("弓")
         emoji_use_case = EmojiUseCase(emoji)
-        generator = StandardGeneratorImpl(emoji_use_case)
+        generator = StandardGenerator(emoji_use_case)
         generator.emoji_use_case.set_base_size(100)
         assert find_best_font_and_box(
             generator.emoji_use_case.get_split_size(),

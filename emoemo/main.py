@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from emoemo.entity.emoji import Emoji
 from emoemo.infrastructure.generator import (
-    AutoFontSizeChangeGeneratorImpl,
-    StandardGeneratorImpl,
+    AutoFontSizeChangeGenerator,
+    StandardGenerator,
 )
 from emoemo.use_case.emoji_use_case import EmojiUseCase
 
@@ -17,9 +17,9 @@ def main(
     emoji = Emoji(text=input_text, font_color=font_color, font_name=font_name)
     emoji_use_case = EmojiUseCase(emoji)
     if auto_font_size:
-        generator = AutoFontSizeChangeGeneratorImpl(emoji_use_case)
+        generator = AutoFontSizeChangeGenerator(emoji_use_case)
     else:
-        generator = StandardGeneratorImpl(emoji_use_case)
+        generator = StandardGenerator(emoji_use_case)
     generator.generate()
 
 
