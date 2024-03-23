@@ -3,7 +3,11 @@ from enum import Enum
 
 
 class BoundingBox(Enum):
-    """ImageFontのbounding boxを表す"""
+    """ImageFontのbounding boxを表す
+
+    NOTE: pillowのImageFontのページ
+        https://pillow.readthedocs.io/en/stable/reference/ImageFont.html
+    """
 
     LEFT: int = 0
     TOP: int = 1
