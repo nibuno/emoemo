@@ -7,6 +7,7 @@ from emoemo.infrastructure.generator import (
 from emoemo.use_case.emoji_use_case import EmojiUseCase
 import pytest
 
+
 # 移植元の結果と異なるが、効果があるのか含めて考えたいので一旦スキップ
 # (0, 25, 86, 100) になったが正直大差は無さそうだとも考えている...
 @pytest.mark.skip
