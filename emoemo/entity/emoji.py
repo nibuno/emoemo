@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Tuple
 
 
 @dataclass
 class Emoji:
     text: str
     file_extension: str = ".png"
-    background_color: Tuple[int, int, int, int] = (0, 0, 0, 0)
+    background_color: tuple[int, int, int, int] = (0, 0, 0, 0)
     font_color: str = "#000000"
     base_size: int = 128
     font_name: str = "rounded-mplus-1c-medium"
