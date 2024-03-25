@@ -2,86 +2,87 @@
 from PIL import Image, ImageDraw, ImageFont
 
 from emoemo.entity.bounding_box import BoundingBox
-from emoemo.use_case.emoji_use_case import EmojiUseCase
+from emoemo.entity.emoji import Emoji
 
 
 class StandardGenerator:
-    def __init__(self, emoji_use_case: EmojiUseCase):
-        self.emoji_use_case: EmojiUseCase = emoji_use_case
+    def __init__(self, emoji: Emoji):
+        self.emoji = emoji
 
     def generate(self):
         image: Image = Image.new(
             mode="RGBA",
             size=(
-                self.emoji_use_case.get_base_size(),
-                self.emoji_use_case.get_base_size(),
+                self.emoji.base_size,
+                self.emoji.base_size,
             ),
-            color=self.emoji_use_case.get_background_color(),
+            color=self.emoji.background_color,
         )
         image_draw: ImageDraw = ImageDraw.Draw(im=image)
         count: int = 1
-        for text in self.emoji_use_case.get_text().splitlines():
+        for text in self.emoji.text.splitlines():
             image_font: ImageFont
             image_font, _ = find_best_font_and_box(
-                self.emoji_use_case.get_split_size(),
+                self.emoji.get_split_size(),
                 text,
-                self.emoji_use_case.get_font(),
-                self.emoji_use_case.get_base_size(),
+                self.emoji.font,
+                self.emoji.base_size,
             )
             image_draw.text(
                 xy=(
-                    self.emoji_use_case.get_center(),
-                    (self.emoji_use_case.get_split_size() / 2) * count,
+                    self.emoji.get_center(),
+                    (self.emoji.get_split_size() / 2) * count,
                 ),
                 text=text,
-                fill=self.emoji_use_case.get_font_color(),
+                fill=self.emoji.font_color,
                 font=image_font,
                 anchor="mm",
             )
             count += 2
-        image.save(fp=self.emoji_use_case.get_save_file_path())
+        image.save(fp=self.emoji.get_save_file_path())
 
 
 class AutoFontSizeChangeGenerator:
-    def __init__(self, emoji_use_case: EmojiUseCase):
-        self.emoji_use_case: EmojiUseCase = emoji_use_case
+    def __init__(self, emoji: Emoji):
+        self.emoji = emoji
 
     def generate(self):
-        resize: int = self.emoji_use_case.get_base_size()
-        self.emoji_use_case.set_base_size(128 * 2)
+        resize: int = self.emoji.base_size
+        # FIXME: 128 * 2 の意図が不明なのでコメントを付け加えたい
+        self.emoji.base_size = 128 * 2
         bounding_bottoms: list = []
-        for text in self.emoji_use_case.get_text().splitlines():
+        for text in self.emoji.text.splitlines():
             bounding_box: tuple[int, int, int, int]
             _, bounding_box = find_best_font_and_box(
-                self.emoji_use_case.get_split_size(),
+                self.emoji.get_split_size(),
                 text,
-                self.emoji_use_case.get_font(),
-                self.emoji_use_case.get_base_size(),
+                self.emoji.font,
+                self.emoji.base_size,
             )
             bounding_bottoms.append(bounding_box[BoundingBox.BOTTOM.value])
         image: Image = Image.new(
             mode="RGBA",
-            size=(self.emoji_use_case.get_base_size(), sum(bounding_bottoms)),
-            color=self.emoji_use_case.get_background_color(),
+            size=(self.emoji.base_size, sum(bounding_bottoms)),
+            color=self.emoji.background_color,
         )
         image_draw: ImageDraw = ImageDraw.Draw(im=image)
-        for i, text in enumerate(self.emoji_use_case.get_text().splitlines(), start=1):
+        for i, text in enumerate(self.emoji.text.splitlines(), start=1):
             image_font: ImageFont
             image_font, _ = find_best_font_and_box(
-                self.emoji_use_case.get_split_size(),
+                self.emoji.get_split_size(),
                 text,
-                self.emoji_use_case.get_font(),
-                self.emoji_use_case.get_base_size(),
+                self.emoji.font,
+                self.emoji.base_size,
             )
             image_draw.text(
-                xy=(self.emoji_use_case.get_center(), calc_y_axis(bounding_bottoms, i)),
+                xy=(self.emoji.get_center(), calc_y_axis(bounding_bottoms, i)),
                 text=text,
-                fill=self.emoji_use_case.get_font_color(),
+                fill=self.emoji.font_color,
                 font=image_font,
                 anchor="mm",
             )
         image: Image = image.resize((resize, resize))
-        image.save(fp=self.emoji_use_case.get_save_file_path())
+        image.save(fp=self.emoji.get_save_file_path())
 
 
 def calc_y_axis(bounding_bottoms: list[int, ...], count: int) -> int:

@@ -16,3 +16,17 @@ class Emoji:
         font = f"fonts/rounded-mplus-20150529/{self.font_name}.ttf"
         project_root = Path(__file__).parent.parent
         self.font: str = str(project_root / font)
+
+    def get_save_file_path(self) -> str:
+        file_stem: str = "_".join(self.text.splitlines())
+        file_name: str = file_stem + self.file_extension
+        # TODO: saveディレクトリが存在する前提のコードになっている
+        # FIXME: 絶対パスなので相対パスに書き換えたい
+        save_file_path: str = "/emoemo/emoemo/static/" + file_name
+        return save_file_path
+
+    def get_split_size(self) -> int:
+        return int(self.base_size / len(self.text.splitlines()))
+
+    def get_center(self) -> float:
+        return self.base_size / 2

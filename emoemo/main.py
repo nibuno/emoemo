@@ -4,7 +4,6 @@ from emoemo.infrastructure.generator import (
     AutoFontSizeChangeGenerator,
     StandardGenerator,
 )
-from emoemo.use_case.emoji_use_case import EmojiUseCase
 
 
 def main(
@@ -15,11 +14,10 @@ def main(
 ):
     # FIXME: 背景色を変更できるようにする
     emoji = Emoji(text=input_text, font_color=font_color, font_name=font_name)
-    emoji_use_case = EmojiUseCase(emoji)
     if auto_font_size:
-        generator = AutoFontSizeChangeGenerator(emoji_use_case)
+        generator = AutoFontSizeChangeGenerator(emoji)
     else:
-        generator = StandardGenerator(emoji_use_case)
+        generator = StandardGenerator(emoji)
     generator.generate()
 
 
