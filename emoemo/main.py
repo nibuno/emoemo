@@ -19,7 +19,3 @@ def main(
     else:
         generator = StandardGenerator(emoji)
     generator.generate()
-
-
-if __name__ == "__main__":
-    main("せやかて\n工藤", True)
