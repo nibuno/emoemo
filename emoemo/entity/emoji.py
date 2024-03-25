@@ -20,7 +20,6 @@ class Emoji:
     def get_save_file_path(self) -> str:
         file_stem: str = "_".join(self.text.splitlines())
         file_name: str = file_stem + self.file_extension
-        # TODO: saveディレクトリが存在する前提のコードになっている
         # FIXME: 絶対パスなので相対パスに書き換えたい
         save_file_path: str = "/emoemo/emoemo/static/" + file_name
         return save_file_path
