@@ -48,8 +48,10 @@ class AutoFontSizeChangeGenerator:
 
     def generate(self):
         resize: int = self.emoji.base_size
-        # FIXME: 128 * 2 の意図が不明なのでコメントを付け加えたい
-        self.emoji.base_size = 128 * 2
+        # そのままのサイズで作成すると、生成された画像が粗くなるため
+        # 暫定的に2倍のサイズで描画して、リサイズすることでフォントサイズを変更する
+        # (2倍である必要性は無い)
+        self.emoji.base_size = self.emoji.base_size * 2
         bounding_bottoms: list = []
         for text in self.emoji.text.splitlines():
             bounding_box: tuple[int, int, int, int]
