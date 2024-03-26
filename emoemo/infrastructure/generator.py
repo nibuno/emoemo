@@ -47,7 +47,7 @@ class AutoFontSizeChangeGenerator:
         self.emoji = emoji
 
     def generate(self):
-        resize: int = self.emoji.base_size
+        change_before_base_size: int = self.emoji.base_size
         # そのままのサイズで作成すると、生成された画像が粗くなるため
         # 暫定的に2倍のサイズで描画して、リサイズすることでフォントサイズを変更する
         # (2倍である必要性は無い)
@@ -83,7 +83,7 @@ class AutoFontSizeChangeGenerator:
                 font=image_font,
                 anchor="mm",
             )
-        image: Image = image.resize((resize, resize))
+        image: Image = image.resize((change_before_base_size, change_before_base_size))
         image.save(fp=self.emoji.get_save_file_path())
 
 
