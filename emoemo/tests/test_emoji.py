@@ -1,7 +1,7 @@
 from emoemo.entity.emoji import Emoji
 
 
-class TestMakeSlackEmoji:
+class TestEmoji:
     def test_get_save_file_path(self):
         emoji = Emoji("test")
         assert emoji.get_save_file_path() == "/emoemo/emoemo/static/test.png"
