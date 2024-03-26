@@ -10,6 +10,7 @@ class StandardGenerator:
         self.emoji = emoji
 
     def generate(self):
+        """emojiのテキストを画像に生成、保存する"""
         image: Image = Image.new(
             mode="RGBA",
             size=(
@@ -47,6 +48,7 @@ class AutoFontSizeChangeGenerator:
         self.emoji = emoji
 
     def generate(self):
+        """emojiのテキストを画像に生成、保存する"""
         change_before_base_size: int = self.emoji.base_size
         # そのままのサイズで作成すると、生成された画像が粗くなるため
         # 暫定的に2倍のサイズで描画して、リサイズすることでフォントサイズを変更する
