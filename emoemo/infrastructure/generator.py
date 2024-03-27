@@ -115,6 +115,21 @@ def calc_y_axis(bounding_bottoms: list[int, ...], count: int) -> int:
 def find_best_font_and_box(
     font_size: int, text: str, font: str, base_size: int
 ) -> tuple[ImageFont, tuple[int, int, int, int]]:
+    """最適なフォントと境界ボックスを取得する
+
+    テキストを描画するための最適なフォントと境界ボックスを取得する
+    テキストのサイズが基準サイズを超える場合は、フォントサイズを減らして再計算する
+
+    :param font_size: フォントサイズ
+    :param text: 描画するテキスト
+    :param font: 使用するフォント名（パス）
+    :param base_size: 基準となるテキストが収まるべきサイズ
+    :return:
+    image_font: 調整されたフォントオブジェクト
+        NOTE: https://pillow.readthedocs.io/en/stable/reference/ImageFont.html#PIL.ImageFont.truetype
+    bounding_box: テキストのbounding box
+        NOTE: https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.getbbox
+    """
     image_font: ImageFont | None = None
     bounding_box: tuple[int, int, int, int] | None = None
     while (
