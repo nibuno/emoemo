@@ -24,10 +24,10 @@ class StandardGenerator:
         for text in self.emoji.text.splitlines():
             image_font: ImageFont
             image_font, _ = adjust_font_size_for_bounding_box(
-                self.emoji.get_split_size(),
-                text,
-                self.emoji.font,
-                self.emoji.base_size,
+                font_size=self.emoji.get_split_size(),
+                text=text,
+                font=self.emoji.font,
+                base_size=self.emoji.base_size,
             )
             image_draw.text(
                 xy=(
@@ -58,10 +58,10 @@ class AutoFontSizeChangeGenerator:
         for text in self.emoji.text.splitlines():
             bounding_box: tuple[int, int, int, int]
             _, bounding_box = adjust_font_size_for_bounding_box(
-                self.emoji.get_split_size(),
-                text,
-                self.emoji.font,
-                self.emoji.base_size,
+                font_size=self.emoji.get_split_size(),
+                text=text,
+                font=self.emoji.font,
+                base_size=self.emoji.base_size,
             )
             bounding_bottoms.append(bounding_box[BoundingBox.BOTTOM.value])
         image: Image = Image.new(
@@ -73,10 +73,10 @@ class AutoFontSizeChangeGenerator:
         for i, text in enumerate(self.emoji.text.splitlines(), start=1):
             image_font: ImageFont
             image_font, _ = adjust_font_size_for_bounding_box(
-                self.emoji.get_split_size(),
-                text,
-                self.emoji.font,
-                self.emoji.base_size,
+                font_size=self.emoji.get_split_size(),
+                text=text,
+                font=self.emoji.font,
+                base_size=self.emoji.base_size,
             )
             image_draw.text(
                 xy=(self.emoji.get_center(), calc_y_axis(bounding_bottoms, i)),
@@ -85,7 +85,7 @@ class AutoFontSizeChangeGenerator:
                 font=image_font,
                 anchor="mm",
             )
-        image: Image = image.resize((change_before_base_size, change_before_base_size))
+        image: Image = image.resize(size=(change_before_base_size, change_before_base_size))
         image.save(fp=self.emoji.get_save_file_path())
 
 
