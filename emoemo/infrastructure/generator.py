@@ -23,7 +23,7 @@ class StandardGenerator:
         count: int = 1
         for text in self.emoji.text.splitlines():
             image_font: ImageFont
-            image_font, _ = find_best_font_and_box(
+            image_font, _ = adjust_font_size_for_bounding_box(
                 self.emoji.get_split_size(),
                 text,
                 self.emoji.font,
@@ -57,7 +57,7 @@ class AutoFontSizeChangeGenerator:
         bounding_bottoms: list = []
         for text in self.emoji.text.splitlines():
             bounding_box: tuple[int, int, int, int]
-            _, bounding_box = find_best_font_and_box(
+            _, bounding_box = adjust_font_size_for_bounding_box(
                 self.emoji.get_split_size(),
                 text,
                 self.emoji.font,
@@ -72,7 +72,7 @@ class AutoFontSizeChangeGenerator:
         image_draw: ImageDraw = ImageDraw.Draw(im=image)
         for i, text in enumerate(self.emoji.text.splitlines(), start=1):
             image_font: ImageFont
-            image_font, _ = find_best_font_and_box(
+            image_font, _ = adjust_font_size_for_bounding_box(
                 self.emoji.get_split_size(),
                 text,
                 self.emoji.font,
@@ -112,7 +112,7 @@ def calc_y_axis(bounding_bottoms: list[int, ...], count: int) -> int:
     return int(sum(results))
 
 
-def find_best_font_and_box(
+def adjust_font_size_for_bounding_box(
     font_size: int, text: str, font: str, base_size: int
 ) -> tuple[ImageFont, tuple[int, int, int, int]]:
     """最適なフォントと境界ボックスを取得する

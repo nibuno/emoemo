@@ -1,7 +1,7 @@
 from emoemo.entity.emoji import Emoji
 from emoemo.infrastructure.generator import (
     StandardGenerator,
-    find_best_font_and_box,
+    adjust_font_size_for_bounding_box,
     calc_y_axis,
 )
 import pytest
@@ -11,11 +11,11 @@ import pytest
 # (0, 25, 86, 100) になったが正直大差は無さそうだとも考えている...
 @pytest.mark.skip
 class TestStandardGeneratorImpl:
-    def test_find_best_font_and_box(self):
+    def test_adjust_font_size_for_bounding_box(self):
         emoji = Emoji("弓")
         generator = StandardGenerator(emoji)
         generator.emoji.base_size = 100
-        assert find_best_font_and_box(
+        assert adjust_font_size_for_bounding_box(
             generator.emoji.get_split_size(),
             generator.emoji.text,
             generator.emoji.font,
