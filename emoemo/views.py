@@ -35,7 +35,7 @@ def index(request):
 
     return render(
         request,
-        "base.html",
+        "index.html",
         {
             "font_text": font_text,
             "emoji_img": emoji_img,
