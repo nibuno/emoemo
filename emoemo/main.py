@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from emoemo.emoji import Emoji
-from emoemo.generator import (
+from emoemo.entity.emoji import Emoji
+from emoemo.infrastructure.generator import (
     AutoFontSizeChangeGenerator,
     StandardGenerator,
 )
