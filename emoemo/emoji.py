@@ -9,7 +9,9 @@ class Emoji:
 
     text: str
     file_extension: str = ".png"
-    background_color: tuple[int, int, int, int] = (0, 0, 0, 0)
+    # NOTE: RGBAや他の形式でも指定できるので、対応できるようにしても良さそう
+    color_mode: str = "RGB"
+    background_color: str = "#ffffff"
     font_color: str = "#000000"
     base_size: int = 128
     font_name: str = "rounded-mplus-1c-medium"

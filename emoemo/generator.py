@@ -12,7 +12,7 @@ class StandardGenerator:
     def generate(self):
         """emojiのテキストを画像に生成、保存する"""
         image: Image = Image.new(
-            mode="RGBA",
+            mode=self.emoji.color_mode,
             size=(
                 self.emoji.base_size,
                 self.emoji.base_size,
@@ -65,7 +65,7 @@ class AutoFontSizeChangeGenerator:
             )
             bounding_bottoms.append(bounding_box[BoundingBox.BOTTOM.value])
         image: Image = Image.new(
-            mode="RGBA",
+            mode=self.emoji.color_mode,
             size=(self.emoji.base_size, sum(bounding_bottoms)),
             color=self.emoji.background_color,
         )
