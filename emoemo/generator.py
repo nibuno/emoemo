@@ -54,6 +54,9 @@ class AutoFontSizeChangeGenerator:
         # 暫定的に2倍のサイズで描画して、リサイズすることでフォントサイズを変更する
         # (2倍である必要性は無い)
         self.emoji.base_size = self.emoji.base_size * 2
+        # bounding_boxのbottom部分はy軸の下部分の位置を表す
+        # そのため、各bounding_boxのbottom部分をリストに格納して、
+        # その合計値を取得することで、画像の高さを取得する
         bounding_bottoms: list = []
         for text in self.emoji.text.splitlines():
             bounding_box: tuple[int, int, int, int]
