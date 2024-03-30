@@ -12,14 +12,19 @@ def index(request):
     # TODO: auto_font_sizeをクエリパラメータで受け取る
     font_color = request.GET.get("font-color")
     font_name = request.GET.get("font-name")
+    background_color = request.GET.get("background-color")
 
     emoji_img = None
 
     auto_font_size = True
 
     if font_text:
-        # FIXME: 背景色を変更できるようにする
-        emoji = Emoji(text=font_text, font_color=font_color, font_name=font_name)
+        emoji = Emoji(
+            text=font_text,
+            font_color=font_color,
+            font_name=font_name,
+            background_color=background_color,
+        )
         if auto_font_size:
             generator = AutoFontSizeChangeGenerator(emoji)
         else:
