@@ -14,8 +14,8 @@ class Emoji:
 
     def __post_init__(self):
         font = f"fonts/rounded-mplus-20150529/{self.font_name}.ttf"
-        project_root = Path(__file__).parent.parent
-        self.font: str = str(project_root / font)
+        app_dir = Path(__file__).parent
+        self.font: str = str(app_dir / font)
 
     def get_save_file_path(self) -> str:
         file_stem: str = "_".join(self.text.splitlines())
