@@ -6,6 +6,7 @@ from emoemo.generator import (
     StandardGenerator,
 )
 
+
 def index(request):
     font_text = request.GET.get("font-text")
     # TODO: auto_font_sizeをクエリパラメータで受け取る

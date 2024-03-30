@@ -85,7 +85,9 @@ class AutoFontSizeChangeGenerator:
                 font=image_font,
                 anchor="mm",
             )
-        image: Image = image.resize(size=(change_before_base_size, change_before_base_size))
+        image: Image = image.resize(
+            size=(change_before_base_size, change_before_base_size)
+        )
         image.save(fp=self.emoji.get_save_file_path())
 
 
