@@ -45,5 +45,6 @@ def index(request):
             "emoji_img": emoji_img,
             "font_color": font_color,
             "font_name": font_name,
+            "background_color": background_color,
         },
     )
