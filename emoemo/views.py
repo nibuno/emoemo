@@ -1,7 +1,10 @@
 from django.shortcuts import render
 
-from .main import main
-
+from emoemo.emoji import Emoji
+from emoemo.generator import (
+    AutoFontSizeChangeGenerator,
+    StandardGenerator,
+)
 
 def index(request):
     font_text = request.GET.get("font-text")
@@ -11,21 +14,16 @@ def index(request):
 
     emoji_img = None
 
-    main_args = {
-        "input_text": font_text,
-        "auto_font_size": True,
-        "font_color": font_color,
-        "font_name": font_name,
-    }
-
-    if font_color:
-        main_args["font_color"] = font_color
-
-    if font_name:
-        main_args["font_name"] = font_name
+    auto_font_size = True
 
     if font_text:
-        main(**main_args)
+        # FIXME: 背景色を変更できるようにする
+        emoji = Emoji(text=font_text, font_color=font_color, font_name=font_name)
+        if auto_font_size:
+            generator = AutoFontSizeChangeGenerator(emoji)
+        else:
+            generator = StandardGenerator(emoji)
+        generator.generate()
 
         # font_textに改行文字が入っていたら_に変換して渡す
         # e.g. せやかて\n工藤 -> せやかて_工藤
