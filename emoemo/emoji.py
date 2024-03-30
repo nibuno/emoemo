@@ -5,6 +5,7 @@ from pathlib import Path
 
 @dataclass
 class Emoji:
+    """絵文字画像生成用のテキスト、フォント、サイズ、色を管理するクラス"""
     text: str
     file_extension: str = ".png"
     background_color: tuple[int, int, int, int] = (0, 0, 0, 0)
