@@ -33,9 +33,9 @@ def index(request):
 
         # font_textに改行文字が入っていたら_に変換して渡す
         # e.g. せやかて\n工藤 -> せやかて_工藤
-        parsed_font_text = "_".join(font_text.splitlines())
+        newline_to_underscore_text = "_".join(font_text.splitlines())
 
-        emoji_img = f"{parsed_font_text}.png"
+        emoji_img = f"{newline_to_underscore_text}.png"
 
     return render(
         request,
