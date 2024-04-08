@@ -27,7 +27,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # NOTE: 以下を参考に環境変数を使うようにした
 # https://dev.to/earthcomfy/django-how-to-keep-secrets-safe-with-python-dotenv-5811
 SECRET_KEY = str(os.getenv("SECRET_KEY"))
-DEBUG = True
+
+# django_browser_reload が無限リロードするケースがあるので
+# 制御出来るようにDEBUGを環境変数で制御する
+if os.getenv("DEBUG"):
+    DEBUG = True
+else:
+    DEBUG = False
 
 ALLOWED_HOSTS = ["0.0.0.0" , "127.0.0.1"]
 
