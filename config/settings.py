@@ -30,7 +30,7 @@ SECRET_KEY = str(os.getenv("SECRET_KEY"))
 
 # django_browser_reload が無限リロードするケースがあるので
 # 制御出来るようにDEBUGを環境変数で制御する
-if os.getenv("DEBUG"):
+if int(os.getenv("DEBUG")):
     DEBUG = True
 else:
     DEBUG = False
