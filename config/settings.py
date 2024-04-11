@@ -50,8 +50,12 @@ INSTALLED_APPS = [
     "emoemo",
     "tailwind",
     "tailwindcss",  # theme
-    "django_browser_reload",
 ]
+
+# django_browser_reload が無限リロードするケースがあるので
+# 制御出来るようにINSTALLED_APPSに追加する
+if int(os.getenv("USE_DJANGO_BROWSER_RELOAD")):
+    INSTALLED_APPS.append("django_browser_reload")
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -61,8 +65,13 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
+
+# django_browser_reload が無限リロードするケースがあるので
+# 制御出来るようにMIDDLEWAREに追加する
+if int(os.getenv("USE_DJANGO_BROWSER_RELOAD")):
+    MIDDLEWARE.append("django_browser_reload.middleware.BrowserReloadMiddleware")
+
 
 ROOT_URLCONF = "config.urls"
 

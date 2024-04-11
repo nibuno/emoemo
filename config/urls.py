@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+import os
 from django.contrib import admin
 from django.urls import include, path
 
@@ -23,5 +24,9 @@ from emoemo.views import index
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("emoemo", index, name="index"),
-    path("__reload__/", include("django_browser_reload.urls")),
 ]
+
+# django_browser_reload が無限リロードするケースがあるので
+# 制御出来るようにurlpatternsに追加する
+if int(os.getenv("USE_DJANGO_BROWSER_RELOAD")):
+    urlpatterns.append(path("browser_reload/", include("django_browser_reload.urls")))

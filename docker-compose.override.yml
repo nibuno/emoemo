@@ -4,3 +4,4 @@ services:
       # 1: 有効(True), 0: 無効(False)
       # settings.py で読み込んで利用される
       - DEBUG=1
+      - USE_DJANGO_BROWSER_RELOAD=0
