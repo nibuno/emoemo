@@ -35,7 +35,7 @@ if int(os.getenv("DEBUG")):
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = ["0.0.0.0" , "127.0.0.1"]
+ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1"]
 
 
 # Application definition
