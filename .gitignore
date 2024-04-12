@@ -11,3 +11,5 @@ data
 /.idea/emoemo.iml
 /application/.env
 /.idea/vcs.xml
+.env
+docker-compose.override.yml

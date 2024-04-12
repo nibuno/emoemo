@@ -4,7 +4,15 @@ emojiを作成するアプリケーションです。
 ここは備忘録、メモ帳として暫くは利用されます。
 
 .envファイルにはsettings.pyで利用する環境変数を記述しています。
+.envファイルは各自で作成してください。
 
+## 作成例
+
+```shell
+# USE_DJANGO_BROWSER_RELOADを使わない設定
+touch .env
+echo "USE_DJANGO_BROWSER_RELOAD=0" >> .env
+```
 
 ## コンテナのビルド
 

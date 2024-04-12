@@ -18,6 +18,7 @@ Including another URLconf
 import os
 from django.contrib import admin
 from django.urls import include, path
+from dotenv import load_dotenv
 
 from emoemo.views import index
 
@@ -26,6 +27,7 @@ urlpatterns = [
     path("emoemo", index, name="index"),
 ]
 
+load_dotenv()
 # django_browser_reload が無限リロードするケースがあるので
 # 制御出来るようにurlpatternsに追加する
 if int(os.getenv("USE_DJANGO_BROWSER_RELOAD")):
