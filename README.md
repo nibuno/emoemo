@@ -30,6 +30,30 @@ db
 docker compose exec db /bin/bash
 ```
 
+## ruffの実行（format）
+
+```shell
+docker compose run web ruff format .
+```
+
+## djlintの実行(format)
+
+```shell
+docker compose run web djlint . --reformat
+```
+
+## pytestの実行
+
+```shell
+docker compose run web pytest
+```
+
+## tailwindcssのコンパイル
+
+```shell
+docker compose run web python manage.py tailwind start
+```
+
 ## 最初に作成した時のコマンド群
 
 コンテナのビルド後に以下コマンドを実行
@@ -44,26 +68,7 @@ docker compose run web django-admin startapp emoemo
 
 ```shell
 docker compose run web python manage.py tailwind init
-# NOTE: この前段階でnodejsのインストールが必要だったので実施
+# NOTE: この前段階でnodejsのインストールが必要だったので実施した
 docker compose run web python manage.py tailwind install
 docker compose run web python manage.py tailwind start
-```
-
-## ruffの実行（format）
-
-```shell
-docker compose run web ruff format .
-```
-
-
-## djlintの実行(format)
-
-```shell
-docker compose run web djlint . --reformat
-```
-
-## pytestの実行
-
-```shell
-docker compose run web pytest
 ```
