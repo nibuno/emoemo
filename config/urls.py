@@ -30,5 +30,8 @@ urlpatterns = [
 load_dotenv()
 # django_browser_reload が無限リロードするケースがあるので
 # 制御出来るようにurlpatternsに追加する
-if int(os.getenv("USE_DJANGO_BROWSER_RELOAD")):
-    urlpatterns.append(path("browser_reload/", include("django_browser_reload.urls")))
+try:
+    if int(os.getenv("USE_DJANGO_BROWSER_RELOAD")):
+        urlpatterns.append(path("browser_reload/", include("django_browser_reload.urls")))
+except TypeError:
+    pass
