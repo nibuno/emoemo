@@ -18,24 +18,36 @@ def index(request):
 
     auto_font_size = True
 
-    if font_text:
-        emoji = Emoji(
-            text=font_text,
-            font_color=font_color,
-            font_name=font_name,
-            background_color=background_color,
+    if not font_text:
+        return render(
+            request,
+            "index.html",
+            {
+                "font_text": font_text,
+                "emoji_img": emoji_img,
+                "font_color": font_color,
+                "font_name": font_name,
+                "background_color": background_color,
+            },
         )
-        if auto_font_size:
-            generator = AutoFontSizeChangeGenerator(emoji)
-        else:
-            generator = StandardGenerator(emoji)
-        generator.generate()
 
-        # font_textに改行文字が入っていたら_に変換して渡す
-        # e.g. せやかて\n工藤 -> せやかて_工藤
-        newline_to_underscore_text = "_".join(font_text.splitlines())
+    emoji = Emoji(
+        text=font_text,
+        font_color=font_color,
+        font_name=font_name,
+        background_color=background_color,
+    )
+    if auto_font_size:
+        generator = AutoFontSizeChangeGenerator(emoji)
+    else:
+        generator = StandardGenerator(emoji)
+    generator.generate()
 
-        emoji_img = f"{newline_to_underscore_text}.png"
+    # font_textに改行文字が入っていたら_に変換して渡す
+    # e.g. せやかて\n工藤 -> せやかて_工藤
+    newline_to_underscore_text = "_".join(font_text.splitlines())
+
+    emoji_img = f"{newline_to_underscore_text}.png"
 
     return render(
         request,
