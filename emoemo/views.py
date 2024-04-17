@@ -14,8 +14,6 @@ def index(request):
     font_name = request.GET.get("font-name")
     background_color = request.GET.get("background-color")
 
-    emoji_img = None
-
     auto_font_size = True
 
     if not font_text:
@@ -24,7 +22,7 @@ def index(request):
             "index.html",
             {
                 "font_text": font_text,
-                "emoji_img": emoji_img,
+                "emoji_img": None,
                 "font_color": font_color,
                 "font_name": font_name,
                 "background_color": background_color,
@@ -47,14 +45,12 @@ def index(request):
     # e.g. せやかて\n工藤 -> せやかて_工藤
     newline_to_underscore_text = "_".join(font_text.splitlines())
 
-    emoji_img = f"{newline_to_underscore_text}.png"
-
     return render(
         request,
         "index.html",
         {
             "font_text": font_text,
-            "emoji_img": emoji_img,
+            "emoji_img": f"{newline_to_underscore_text}.png",
             "font_color": font_color,
             "font_name": font_name,
             "background_color": background_color,
