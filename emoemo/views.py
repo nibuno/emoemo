@@ -9,12 +9,9 @@ from emoemo.generator import (
 
 def index(request):
     font_text = request.GET.get("font-text")
-    # TODO: auto_font_sizeをクエリパラメータで受け取る
     font_color = request.GET.get("font-color")
     font_name = request.GET.get("font-name")
     background_color = request.GET.get("background-color")
-
-    auto_font_size = True
 
     if not font_text:
         return render(
@@ -35,6 +32,8 @@ def index(request):
         font_name=font_name,
         background_color=background_color,
     )
+    # TODO: auto_font_sizeをクエリパラメータで受け取る
+    auto_font_size = True
     if auto_font_size:
         generator = AutoFontSizeChangeGenerator(emoji)
     else:
