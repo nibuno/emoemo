@@ -9,9 +9,6 @@ from emoemo.generator import (
 
 def index(request):
     font_text = request.GET.get("font-text")
-    font_color = request.GET.get("font-color")
-    font_name = request.GET.get("font-name")
-    background_color = request.GET.get("background-color")
 
     if not font_text:
         return render(
@@ -20,11 +17,15 @@ def index(request):
             {
                 "font_text": font_text,
                 "emoji_img": None,
-                "font_color": font_color,
-                "font_name": font_name,
-                "background_color": background_color,
+                "font_color": None,
+                "font_name": None,
+                "background_color": None,
             },
         )
+
+    font_color = request.GET.get("font-color")
+    font_name = request.GET.get("font-name")
+    background_color = request.GET.get("background-color")
 
     emoji = Emoji(
         text=font_text,
