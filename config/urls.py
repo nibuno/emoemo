@@ -24,7 +24,7 @@ from emoemo.views import index
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("emoemo", index, name="index"),
+    path("", index, name="index"),
 ]
 
 load_dotenv()
