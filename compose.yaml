@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   db:
     image: postgres
@@ -7,6 +9,7 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
@@ -20,3 +23,13 @@ services:
       - POSTGRES_PASSWORD=postgres
     depends_on:
       - db
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./static:/static  # ここをemoemo/staticにしていたので、emoemo app内のものだけを参照していた
+    depends_on:
+      - web
