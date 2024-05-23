@@ -12,9 +12,11 @@ services:
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/emoemo
+      - static_volume:/emoemo/static
+      - media_volume:/emoemo/mediafiles
     ports:
       - "8000:8000"
     environment:
@@ -27,9 +29,14 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "80:80"
+      - "1337:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./static:/static  # ここをemoemo/staticにしていたので、emoemo app内のものだけを参照していた
+      - static_volume:/emoemo/static
+      - media_volume:/emoemo/mediafiles
     depends_on:
       - web
+
+volumes:
+  static_volume:
+  media_volume:
