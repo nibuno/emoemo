@@ -26,6 +26,19 @@ docker compose build
 docker compose up
 ```
 
+## prod用のコンテナのビルド
+
+```shell
+docker compose -f compose.prod.yaml build
+```
+
+## prod用のコンテナの起動
+
+```shell
+docker compose -f compose.prod.yaml up
+```
+
+
 ## コンテナへの入り方
 
 web
