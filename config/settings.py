@@ -158,5 +158,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 TAILWIND_APP_NAME = "tailwindcss"
 
 INTERNAL_IPS = [
-    "127.0.0.1", "localhost",
+    "127.0.0.1",
 ]
