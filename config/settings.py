@@ -144,9 +144,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/emoemo/static/'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = '/emoemo/mediafiles/'
-
 CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 
 
