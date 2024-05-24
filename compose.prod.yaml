@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   db:
     image: postgres
@@ -7,11 +9,14 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/emoemo
+      - static_volume:/emoemo/static
+      - media_volume:/emoemo/mediafiles
     ports:
       - "8000:8000"
     environment:
@@ -20,3 +25,17 @@ services:
       - POSTGRES_PASSWORD=postgres
     depends_on:
       - db
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "1337:80"
+    volumes:
+      - static_volume:/emoemo/static
+      - media_volume:/emoemo/mediafiles
+    depends_on:
+      - web
+
+volumes:
+  static_volume:
+  media_volume:
