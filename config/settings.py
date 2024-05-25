@@ -50,7 +50,7 @@ INSTALLED_APPS = [
 # django_browser_reload が無限リロードするケースがあるので
 # 制御出来るようにINSTALLED_APPSに追加する
 try:
-    if int(os.getenv("USE_DJANGO_BROWSER_RELOAD")):
+    if bool(int(os.getenv("USE_DJANGO_BROWSER_RELOAD"))):
         INSTALLED_APPS.append("django_browser_reload")
 except TypeError:
     pass
@@ -68,7 +68,7 @@ MIDDLEWARE = [
 # django_browser_reload が無限リロードするケースがあるので
 # 制御出来るようにMIDDLEWAREに追加する
 try:
-    if int(os.getenv("USE_DJANGO_BROWSER_RELOAD")):
+    if bool(int(os.getenv("USE_DJANGO_BROWSER_RELOAD"))):
         MIDDLEWARE.append("django_browser_reload.middleware.BrowserReloadMiddleware")
 except TypeError:
     pass
