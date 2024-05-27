@@ -50,11 +50,8 @@ INSTALLED_APPS = [
 
 # django_browser_reload が無限リロードするケースがあるので
 # 制御出来るようにINSTALLED_APPSに追加する
-try:
-    if bool(int(os.getenv("USE_DJANGO_BROWSER_RELOAD"))):
-        INSTALLED_APPS.append("django_browser_reload")
-except TypeError:
-    pass
+if bool(int(os.getenv("USE_DJANGO_BROWSER_RELOAD", default=0))):
+    INSTALLED_APPS.append("django_browser_reload")
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -68,11 +65,8 @@ MIDDLEWARE = [
 
 # django_browser_reload が無限リロードするケースがあるので
 # 制御出来るようにMIDDLEWAREに追加する
-try:
-    if bool(int(os.getenv("USE_DJANGO_BROWSER_RELOAD"))):
-        MIDDLEWARE.append("django_browser_reload.middleware.BrowserReloadMiddleware")
-except TypeError:
-    pass
+if bool(int(os.getenv("USE_DJANGO_BROWSER_RELOAD", default=0))):
+    MIDDLEWARE.append("django_browser_reload.middleware.BrowserReloadMiddleware")
 
 
 ROOT_URLCONF = "config.urls"
