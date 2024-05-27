@@ -28,8 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # https://dev.to/earthcomfy/django-how-to-keep-secrets-safe-with-python-dotenv-5811
 SECRET_KEY = str(os.getenv("SECRET_KEY"))
 
-# TODO: DEBUGを環境変数で制御する
-DEBUG = True
+DEBUG = bool(int(os.getenv("DEBUG", default=0)))
 
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
