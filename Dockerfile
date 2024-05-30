@@ -12,7 +12,7 @@ RUN pip install -r requirements-dev.txt
 COPY . /emoemo/
 
 #NOTE: tailwindcssを利用するためにnodeをインストール
-# TODO: build出来なくなったので対応策を考える必要がある
+# TODO: build出来なくなるケースがあったので、再発した場合は対応する
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get update && \
     apt-get install -y nodejs
