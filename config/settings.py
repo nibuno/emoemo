@@ -134,8 +134,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = '/emoemo/static/'
+STATIC_URL = "static/"
+STATIC_ROOT = "/emoemo/static/"
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 
