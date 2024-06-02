@@ -93,3 +93,11 @@ docker compose run web python manage.py tailwind init
 docker compose run web python manage.py tailwind install
 docker compose run web python manage.py tailwind start
 ```
+
+## 静的ファイルを集める
+
+```shell
+docker compose run web python manage.py collectstatic --noinput
+```
+
+`--noinput`オプションをつけることで、入力をスキップして実行できる。
