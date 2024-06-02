@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
 from pathlib import Path
+from django.conf import settings
 
 
 @dataclass
@@ -25,7 +26,8 @@ class Emoji:
         file_stem: str = "_".join(self.text.splitlines())
         file_name: str = file_stem + self.file_extension
         # FIXME: 絶対パスなので相対パスに書き換えたい
-        save_file_path: str = "/emoemo/emoemo/static/" + file_name
+        # TODO: 画像の保存先がemoemo/media/になるようにする
+        save_file_path: str = settings.MEDIA_ROOT + file_name
         return save_file_path
 
     def get_split_size(self) -> int:

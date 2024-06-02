@@ -22,6 +22,9 @@ from dotenv import load_dotenv
 
 from emoemo.views import index
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", index, name="index"),
@@ -32,3 +35,6 @@ load_dotenv()
 # 制御出来るようにurlpatternsに追加する
 if bool(int(os.getenv("USE_DJANGO_BROWSER_RELOAD", default=0))):
     urlpatterns.append(path("browser_reload/", include("django_browser_reload.urls")))
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

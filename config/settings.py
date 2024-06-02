@@ -137,6 +137,11 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = "/emoemo/static/"
 
+MEDIA_URL = "media/"
+# MEDIA_ROOT = "/emoemo/media/"
+MEDIA_ROOT = "/emoemo/"
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 絶対パスを使用します
+
 CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 
 
