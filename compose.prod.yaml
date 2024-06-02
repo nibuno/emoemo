@@ -16,6 +16,7 @@ services:
     volumes:
       - .:/emoemo
       - static_volume:/emoemo/static
+      - media_volume:/emoemo/media
     ports:
       - "8000:8000"
     environment:
@@ -31,6 +32,7 @@ services:
       - "1337:80"
     volumes:
       - static_volume:/emoemo/static
+      - media_volume:/emoemo/media
     depends_on:
       - web
 
