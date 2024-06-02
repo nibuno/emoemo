@@ -6,6 +6,8 @@ from emoemo.generator import (
     StandardGenerator,
 )
 
+from django.conf import settings
+
 
 def index(request):
     font_text = request.GET.get("font-text")
@@ -44,13 +46,14 @@ def index(request):
     # font_textに改行文字が入っていたら_に変換して渡す
     # e.g. せやかて\n工藤 -> せやかて_工藤
     newline_to_underscore_text = "_".join(font_text.splitlines())
+    emoji_img = settings.MEDIA_URL + f"{newline_to_underscore_text}.png"
 
     return render(
         request,
         "index.html",
         {
             "font_text": font_text,
-            "emoji_img": f"{newline_to_underscore_text}.png",
+            "emoji_img": emoji_img,
             "font_color": font_color,
             "font_name": font_name,
             "background_color": background_color,
