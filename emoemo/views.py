@@ -46,14 +46,14 @@ def index(request):
     # font_textに改行文字が入っていたら_に変換して渡す
     # e.g. せやかて\n工藤 -> せやかて_工藤
     newline_to_underscore_text = "_".join(font_text.splitlines())
-    full_path = settings.MEDIA_URL + f"{newline_to_underscore_text}.png"
+    emoji_img = settings.MEDIA_URL + f"{newline_to_underscore_text}.png"
 
     return render(
         request,
         "index.html",
         {
             "font_text": font_text,
-            "emoji_img": full_path,
+            "emoji_img": emoji_img,
             "font_color": font_color,
             "font_name": font_name,
             "background_color": background_color,
