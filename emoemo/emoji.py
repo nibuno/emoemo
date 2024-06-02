@@ -25,8 +25,6 @@ class Emoji:
     def get_save_file_path(self) -> str:
         file_stem: str = "_".join(self.text.splitlines())
         file_name: str = file_stem + self.file_extension
-        # FIXME: 絶対パスなので相対パスに書き換えたい
-        # TODO: 画像の保存先がemoemo/media/になるようにする
         save_file_path: str = settings.MEDIA_ROOT + file_name
         return save_file_path
 
