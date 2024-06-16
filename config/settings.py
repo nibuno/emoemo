@@ -92,6 +92,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# TODO: postgresqlを使うように設定する
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
