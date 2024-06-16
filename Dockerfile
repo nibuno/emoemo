@@ -9,10 +9,15 @@ COPY requirements/requirements.txt /emoemo/
 COPY requirements/requirements-dev.txt /emoemo/
 RUN pip install -r requirements.txt
 RUN pip install -r requirements-dev.txt
-COPY . /emoemo/
 
-#NOTE: tailwindcssを利用するためにnodeをインストール
+# NOTE: tailwindcssを利用するためにnodeをインストール
 # TODO: build出来なくなるケースがあったので、再発した場合は対応する
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get update && \
     apt-get install -y nodejs
+
+COPY ./entrypoint.sh /emoemo/entrypoint.sh
+RUN sed -i 's/\r$//g' /emoemo/entrypoint.sh
+RUN chmod +x /emoemo/entrypoint.sh
+
+COPY . /emoemo/
