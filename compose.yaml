@@ -2,11 +2,15 @@ services:
   db:
     image: postgres:16.3
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      # NOTE: volumesに関する記述を変えることで
+      #       environmentに設定した値が反映されるようになった
+      #       以前は全て postgres だったので初期設定だったのか？
+      # TODO: 調べてブログに書く
+      - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=emoemo_dev_user
+      - POSTGRES_PASSWORD=emoemo_dev_pass
+      - POSTGRES_DB=emoemo_dev
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
@@ -14,9 +18,7 @@ services:
       - .:/emoemo
     ports:
       - "8000:8000"
-    environment:
-      - POSTGRES_NAME=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
     depends_on:
       - db
+volumes:
+  postgres_data:
