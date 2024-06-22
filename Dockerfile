@@ -22,7 +22,4 @@ RUN chmod +x /emoemo/entrypoint.sh
 
 COPY . /emoemo/
 
-# NOTE: #!/bin/sh が冒頭にない場合、
-#       追加すると exec /emoemo/entrypoint.sh: exec format error が発生する
-# TODO: この失敗の記録を残しておく
 ENTRYPOINT ["/emoemo/entrypoint.sh"]
