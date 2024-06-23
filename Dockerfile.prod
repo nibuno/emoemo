@@ -27,6 +27,10 @@ RUN apt-get update && \
 # lint
 RUN pip install --upgrade pip
 RUN pip install flake8==6.0.0
+# TODO: 全てのディレクトリを対象としているため
+#       venvを作成した場合、ディレクトリまで対象となる = venvディレクトリを除外する必要がある
+#       Dockerなので無くても良いとも思うし、
+#       GitHub Actionsでruffを実行して、こちらのlintは削除する、でも良いと思う
 COPY . /emoemo/
 RUN flake8 --ignore=E501,F401 .
 
