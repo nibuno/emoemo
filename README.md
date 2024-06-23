@@ -101,3 +101,15 @@ docker compose run web python manage.py collectstatic --noinput
 ```
 
 `--noinput`オプションをつけることで、入力をスキップして実行できる。
+
+## prod用の実行
+
+開発・本番環境での切り替えは以下のように行う必要がある。
+
+```shell
+docker compose down -v
+docker compose -f compose.prod.yaml down -v
+docker compose -f compose.prod.yaml up -d --build
+docker compose -f compose.prod.yaml exec web python manage.py migrate --noinput
+
+```
