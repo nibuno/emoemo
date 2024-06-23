@@ -1,14 +1,67 @@
+###########
+# BUILDER #
+###########
+
+# pull official base image
 # NOTE: 自走プログラマー82:Docker公式のPythonを使う
-# https://jisou-programmer.beproud.jp/%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E6%A7%8B%E6%88%90/82-Docker%E5%85%AC%E5%BC%8F%E3%81%AEPython%E3%82%92%E4%BD%BF%E3%81%86.html
+#       https://jisou-programmer.beproud.jp/プロジェクト構成/82-Docker公式のPythonを使う.html
 # syntax=docker/dockerfile:1
-FROM python:3.12.2
-ENV PYTHONUNBUFFERED=1
+# NOTE: as builderって何？
+# NOTE: FROM python:3.12.2 を使うようにして良いと思っている
+FROM python:3.11.4-slim-buster as builder
+
+# NOTE: Dockerizing Django with Postgres, Gunicorn, and Nginx にはこの記述は無かったけどどういう物だっけ？
 RUN mkdir /emoemo
+
+# set work directory
 WORKDIR /emoemo
-COPY requirements/requirements.txt /emoemo/
-COPY requirements/requirements-dev.txt /emoemo/
-RUN pip install -r requirements.txt
-RUN pip install -r requirements-dev.txt
+
+# set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc
+
+# lint
+RUN pip install --upgrade pip
+RUN pip install flake8==6.0.0
+COPY . /emoemo/
+RUN flake8 --ignore=E501,F401 .
+
+# install python dependencies
+COPY requirements/requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /emoemo/wheels -r requirements.txt
+
+#########
+# FINAL #
+#########
+
+# pull official base image
+FROM python:3.11.4-slim-buster
+
+# create directory for the app user
+# 最初の `WORKDIR /usr/src/app` とは何が違うの？
+RUN mkdir -p /home/app
+
+# create the app user
+RUN addgroup --system app && adduser --system --group app
+
+# create the appropriate directories
+ENV HOME=/emoemo
+ENV APP_HOME=/emoemo/web
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/staticfiles
+RUN mkdir $APP_HOME/mediafiles
+WORKDIR $APP_HOME
+
+# install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends netcat
+COPY --from=builder /emoemo/wheels /wheels
+COPY --from=builder /emoemo/requirements/requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
 
 # NOTE: tailwindcssを利用するためにnodeをインストール
 # TODO: build出来なくなるケースがあったので、再発した場合は対応する
@@ -16,10 +69,20 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get update && \
     apt-get install -y nodejs
 
+# copy entrypoint.sh
+# NOTE: entrypoint.prod.sh を作成しても良いのかも？
 COPY ./entrypoint.sh /emoemo/entrypoint.sh
 RUN sed -i 's/\r$//g' /emoemo/entrypoint.sh
 RUN chmod +x /emoemo/entrypoint.sh
 
-COPY . /emoemo/
+# copy project
+COPY . $APP_HOME
 
+# chown all the files to the app user
+RUN chown -R app:app $APP_HOME
+
+# change to the app user
+USER app
+
+# run entrypoint.sh
 ENTRYPOINT ["/emoemo/entrypoint.sh"]

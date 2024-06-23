@@ -10,7 +10,10 @@ services:
       - ./.env.prod.db
 
   web:
-    build: .
+    # NOTE: 修正前の書き方とはDockerfileを指定するのが違うだけ、という理解で合っているかな？
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/emoemo
