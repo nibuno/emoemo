@@ -43,7 +43,7 @@ FROM python:3.11.4-slim-buster
 
 # create directory for the app user
 # 最初の `WORKDIR /usr/src/app` とは何が違うの？
-RUN mkdir -p /home/app
+RUN mkdir -p /emoemo
 
 # create the app user
 RUN addgroup --system app && adduser --system --group app
