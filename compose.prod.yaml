@@ -1,14 +1,6 @@
 version: '3'
 
 services:
-  db:
-    image: postgres:16.3
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    # environment: があるとenv_file: が反映されないようだった
-    env_file:
-      - ./.env.prod.db
-
   web:
     # NOTE: 修正前の書き方とはDockerfileを指定するのが違うだけ、という理解で合っているかな？
     build:
@@ -16,27 +8,28 @@ services:
       dockerfile: Dockerfile.prod
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - .:/emoemo
       - static_volume:/emoemo/static
       - media_volume:/emoemo/media
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
     env_file:
       - ./.env.prod
-    environment:
-      - POSTGRES_NAME=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
     depends_on:
       - db
-
+  db:
+    image: postgres:16.3
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    # environment: があるとenv_file: が反映されないようだった
+    env_file:
+      - ./.env.prod.db
   nginx:
     build: ./nginx
-    ports:
-      - "1337:80"
     volumes:
       - static_volume:/emoemo/static
       - media_volume:/emoemo/media
+    ports:
+      - "1337:80"
     depends_on:
       - web
 
