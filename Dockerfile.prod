@@ -31,8 +31,11 @@ RUN pip install flake8==6.0.0
 #       venvを作成した場合、ディレクトリまで対象となる = venvディレクトリを除外する必要がある
 #       Dockerなので無くても良いとも思うし、
 #       GitHub Actionsでruffを実行して、こちらのlintは削除する、でも良いと思う
+# W503はflake8のデフォルトのignoreに入っているらしいので追加
+# https://qiita.com/nakamasato/items/eecd50dcaa1797846e62
+# TODO: 自分でも調べる
 COPY . /emoemo/
-RUN flake8 --ignore=E501,F401 .
+RUN flake8 --ignore=E501,F401,W503 .
 
 # install python dependencies
 COPY requirements/requirements.txt .
