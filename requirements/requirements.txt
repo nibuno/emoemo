@@ -1,8 +1,9 @@
 django==4.2.9
-# psycopg[binary]==3.1.18
-# NOTE: python:3.11.4-slim-buster だと psycopg[binary] ではダメな様子？
+psycopg[binary]==3.1.18
+# NOTE: python:3.11.4-slim-buster だと psycopg[binary] ではダメな様子だった
 #       raise ImproperlyConfigured("Error loading psycopg2 or psycopg module") となってしまうので変更した
-psycopg2-binary==2.9.9
+#       python:3.12.2 を使えるようにしたのでコメントアウト
+# psycopg2-binary==2.9.9
 python-dotenv==1.0.1
 pillow==10.2.0
 gunicorn==22.0.0

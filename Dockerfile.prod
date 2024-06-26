@@ -7,8 +7,8 @@
 #       https://jisou-programmer.beproud.jp/プロジェクト構成/82-Docker公式のPythonを使う.html
 # syntax=docker/dockerfile:1
 # NOTE: as builderって何？
-# NOTE: FROM python:3.12.2 を使うようにして良いと思っている
-FROM python:3.11.4-slim-buster as builder
+# NOTE: FROM python:3.12.2 を使うようにした
+FROM python:3.12.2 as builder
 
 # NOTE: Dockerizing Django with Postgres, Gunicorn, and Nginx にはこの記述は無かったけどどういう物だっけ？
 RUN mkdir /emoemo
@@ -46,7 +46,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /emoemo/wheels -r requirement
 #########
 
 # pull official base image
-FROM python:3.11.4-slim-buster
+FROM python:3.12.2
 
 # create directory for the app user
 # 最初の `WORKDIR /usr/src/app` とは何が違うの？
@@ -64,7 +64,11 @@ RUN mkdir $APP_HOME/mediafiles
 WORKDIR $APP_HOME
 
 # install dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends netcat
+# NOTE: netcatは何？
+#       参考にしたままだと、 E: Package 'netcat' has no installation candidate となってしまう
+#       RUN apt-get update && apt-get install -y --no-install-recommends netcat から `netcat-traditional` に変更
+#       https://stackoverflow.com/questions/75052023/package-netcat-has-no-installation-candidate-ubuntu-22-10-kinetic-redmail
+RUN apt-get update && apt-get install -y --no-install-recommends netcat-traditional
 COPY --from=builder /emoemo/wheels /wheels
 COPY --from=builder /emoemo/requirements/requirements.txt .
 RUN pip install --upgrade pip
