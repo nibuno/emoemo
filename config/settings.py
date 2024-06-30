@@ -138,11 +138,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
-STATIC_ROOT = "/emoemo/static/"
 
-MEDIA_URL = "media/"
-MEDIA_ROOT = "/emoemo/media/"
+# NOTE: パスが悪くて collectstatic が失敗するようだった
+#       PermissionError: [Errno 13] Permission denied: '/emoemo/static/admin'
+#       https://stackoverflow.com/questions/48841074/collectstatic-permission-denied-pythonanywhere-bash-terminal
+#       TODO: なぜこのような違いになるのか調べる
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "static"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 

@@ -141,8 +141,7 @@ def adjust_font_size_for_bounding_box(
         (bounding_box is None)
         or (bounding_box[BoundingBox.RIGHT.value] > base_size)
         or (bounding_box[BoundingBox.BOTTOM.value] > base_size)
-        and (font_size > 0)
-    ):
+    ) and (font_size > 0):
         image_font = ImageFont.truetype(font=font, size=font_size)
         bounding_box = image_font.getbbox(text=text)
         font_size -= 1

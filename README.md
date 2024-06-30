@@ -116,8 +116,13 @@ docker compose run web python manage.py collectstatic --noinput
 
 ```shell
 docker compose down -v
-docker compose -f compose.prod.yaml down -v
 docker compose -f compose.prod.yaml up -d --build
 docker compose -f compose.prod.yaml exec web python manage.py migrate --noinput
+docker compose -f compose.prod.yaml exec web python manage.py collectstatic --no-input --clear
 
 ```
+## 備忘録
+
+`docker compose -f compose.prod.yaml exec web django-admin migrate --noinput`を実行すると、
+
+`django.core.exceptions.ImproperlyConfigured: Requested setting USE_I18N, but settings are not configured. You must either define the environment variable DJANGO_SETTINGS_MODULE or call settings.configure() before accessing settings. `になってしまう
