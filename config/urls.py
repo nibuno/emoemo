@@ -26,7 +26,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
     path("", index, name="index"),
 ]
 
@@ -38,3 +37,6 @@ if bool(int(os.getenv("USE_DJANGO_BROWSER_RELOAD", default=0))):
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# adminサイトはセキュリティ面を考えてenvファイルにADMIN_URLを設定している
+urlpatterns.append(path(os.getenv("ADMIN_URL", "admin/"), admin.site.urls))
