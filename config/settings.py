@@ -147,7 +147,9 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "static"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+# NOTE: TypeError at / 対策
+#       PosixPathとstrを結合しようとしてエラーになるので、BASE_DIRをstr化している
+MEDIA_ROOT = str(BASE_DIR) + "/" + "media"
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 
