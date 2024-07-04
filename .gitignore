@@ -13,3 +13,7 @@ data
 /.idea/vcs.xml
 .env
 docker-compose.override.yml
+/.env.prod
+/.env.prod.db
+/static/
+/media/
