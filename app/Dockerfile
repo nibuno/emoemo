@@ -16,10 +16,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get update && \
     apt-get install -y nodejs
 
-COPY ./entrypoint.sh /emoemo/entrypoint.sh
+COPY entrypoint.sh /emoemo/entrypoint.sh
 RUN sed -i 's/\r$//g' /emoemo/entrypoint.sh
 RUN chmod +x /emoemo/entrypoint.sh
 
-COPY . /emoemo/
+COPY .. /emoemo/
 
 ENTRYPOINT ["/emoemo/entrypoint.sh"]

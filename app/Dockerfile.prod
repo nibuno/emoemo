@@ -34,7 +34,7 @@ RUN pip install flake8==6.0.0
 # W503はflake8のデフォルトのignoreに入っているらしいので追加
 # https://qiita.com/nakamasato/items/eecd50dcaa1797846e62
 # TODO: 自分でも調べる
-COPY . /emoemo/
+COPY .. /emoemo/
 RUN flake8 --ignore=E501,F401,W503 .
 
 # install python dependencies
@@ -69,8 +69,8 @@ WORKDIR $APP_HOME
 #       RUN apt-get update && apt-get install -y --no-install-recommends netcat から `netcat-traditional` に変更
 #       https://stackoverflow.com/questions/75052023/package-netcat-has-no-installation-candidate-ubuntu-22-10-kinetic-redmail
 RUN apt-get update && apt-get install -y --no-install-recommends netcat-traditional
-COPY --from=builder /emoemo/wheels /wheels
-COPY --from=builder /emoemo/requirements/requirements.txt .
+COPY --from=builder /app/emoemo/wheels /wheels
+COPY --from=builder /app/emoemo/requirements/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
@@ -82,12 +82,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
 
 # copy entrypoint.sh
 # NOTE: entrypoint.prod.sh を作成しても良いのかも？
-COPY ./entrypoint.sh /emoemo/entrypoint.sh
+COPY entrypoint.sh /emoemo/entrypoint.sh
 RUN sed -i 's/\r$//g' /emoemo/entrypoint.sh
 RUN chmod +x /emoemo/entrypoint.sh
 
 # copy project
-COPY . $APP_HOME
+COPY .. $APP_HOME
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME

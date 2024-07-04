@@ -1,4 +1,4 @@
-from emoemo.emoji import Emoji
+from app.emoemo.emoji import Emoji
 
 
 class TestEmoji:

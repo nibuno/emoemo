@@ -1,5 +1,5 @@
-from emoemo.emoji import Emoji
-from emoemo.generator import (
+from app.emoemo.emoji import Emoji
+from app.emoemo.generator import (
     StandardGenerator,
     adjust_font_size_for_bounding_box,
     calc_y_axis,
