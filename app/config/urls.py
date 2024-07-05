@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import include, path
 from dotenv import load_dotenv
 
-from app.emoemo.views import index
+from emoemo.views import index
 
 from django.conf import settings
 from django.conf.urls.static import static

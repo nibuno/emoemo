@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from app.emoemo.emoji import Emoji
-from app.emoemo.generator import (
+from emoemo.emoji import Emoji
+from emoemo.generator import (
     AutoFontSizeChangeGenerator,
     StandardGenerator,
 )

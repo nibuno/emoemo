@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from PIL import Image, ImageDraw, ImageFont
 
-from app.emoemo.bounding_box import BoundingBox
-from app.emoemo.emoji import Emoji
+from emoemo.bounding_box import BoundingBox
+from emoemo.emoji import Emoji
 
 
 class StandardGenerator:
