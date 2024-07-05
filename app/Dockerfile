@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 
 ENV PYTHONUNBUFFERED=1
 
-# NTOE: web-1  | /usr/src/app/entrypoint.sh: 7: nc: not found となるので入れてみる
+# NOTE: web-1  | /usr/src/app/entrypoint.sh: 7: nc: not found となるので入れてみる
 RUN apt-get update && apt-get install -y --no-install-recommends netcat-traditional
 
 COPY requirements/requirements.txt .
