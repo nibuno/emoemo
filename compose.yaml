@@ -1,4 +1,16 @@
 services:
+  web:
+    build: ./app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./app/:/usr/src/app/
+    ports:
+      - "8000:8000"
+    # TODO: env_file を使って環境変数を設定する
+    #       無くても `.env`の値を読み取れていた気がするけど・・・？
+    env_file:
+      - ./.env
+
   db:
     image: postgres:16.3
     volumes:
@@ -11,16 +23,5 @@ services:
       - POSTGRES_USER=emoemo_dev_user
       - POSTGRES_PASSWORD=emoemo_dev_pass
       - POSTGRES_DB=emoemo_dev
-  web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/emoemo
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
-    # TODO: env_file を使って環境変数を設定する
-    #       無くても `.env`の値を読み取れていた気がするけど・・・？
 volumes:
   postgres_data:
