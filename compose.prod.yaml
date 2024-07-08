@@ -4,12 +4,12 @@ services:
   web:
     # NOTE: 修正前の書き方とはDockerfileを指定するのが違うだけ、という理解で合っているかな？
     build:
-      context: .
-      dockerfile: app/Dockerfile.prod
+      context: ./app
+      dockerfile: Dockerfile.prod
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - static_volume:/emoemo/web/static
-      - media_volume:/emoemo/web/media
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/media
     expose:
       - 8000
     env_file:
@@ -26,8 +26,8 @@ services:
   nginx:
     build: ./nginx
     volumes:
-      - static_volume:/emoemo/web/static
-      - media_volume:/emoemo/web/media
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/media
     ports:
       - "1337:80"
     depends_on:
