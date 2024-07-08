@@ -7,8 +7,6 @@ services:
       - ./app/:/usr/src/app/
     ports:
       - "8000:8000"
-    # TODO: env_file を使って環境変数を設定する
-    #       無くても `.env`の値を読み取れていた気がするけど・・・？
     env_file:
       - ./.env
 
