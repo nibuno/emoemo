@@ -110,9 +110,20 @@ docker compose run web python manage.py collectstatic --noinput
 
 `--noinput`オプションをつけることで、入力をスキップして実行できる。
 
+## 開発用の実行
+
+NOTE: 本番用を立ち上げた後に実行する想定で記述。
+
+```shell
+docker compose -f compose.prod.yaml down -v
+docker compose up -d --build
+
+```
+
+
 ## prod用の実行
 
-開発・本番環境での切り替えは以下のように行う必要がある。
+NOTE: 開発用を立ち上げた後に実行する想定で記述。
 
 ```shell
 docker compose down -v
@@ -126,3 +137,10 @@ docker compose -f compose.prod.yaml exec web python manage.py collectstatic --no
 `docker compose -f compose.prod.yaml exec web django-admin migrate --noinput`を実行すると、
 
 `django.core.exceptions.ImproperlyConfigured: Requested setting USE_I18N, but settings are not configured. You must either define the environment variable DJANGO_SETTINGS_MODULE or call settings.configure() before accessing settings. `になってしまう
+
+構造を変えたことで以下のようにする必要がありそう。
+
+
+```
+docker compose -f compose.prod.yaml exec web python app/manage.py diffsettings
+```
