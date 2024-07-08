@@ -4,4 +4,4 @@ __pycache__
 *.pyd
 *.py
 # TODO: そもそものファイル階層を変更して特殊な設定はないようにした方が良さそう
-!manage.py
+!app/manage.py

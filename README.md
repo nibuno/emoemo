@@ -110,9 +110,20 @@ docker compose run web python manage.py collectstatic --noinput
 
 `--noinput`オプションをつけることで、入力をスキップして実行できる。
 
+## 開発用の実行
+
+NOTE: 本番用を立ち上げた後に実行する想定で記述。
+
+```shell
+docker compose -f compose.prod.yaml down -v
+docker compose up -d --build
+
+```
+
+
 ## prod用の実行
 
-開発・本番環境での切り替えは以下のように行う必要がある。
+NOTE: 開発用を立ち上げた後に実行する想定で記述。
 
 ```shell
 docker compose down -v

@@ -15,5 +15,5 @@ data
 docker-compose.override.yml
 /.env.prod
 /.env.prod.db
-/static/
-/media/
+/app/static/
+/app/media/

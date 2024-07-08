@@ -10,11 +10,8 @@
 # NOTE: FROM python:3.12.2 を使うようにした
 FROM python:3.12.2 as builder
 
-# NOTE: Dockerizing Django with Postgres, Gunicorn, and Nginx にはこの記述は無かったけどどういう物だっけ？
-RUN mkdir /emoemo
-
 # set work directory
-WORKDIR /emoemo
+WORKDIR /usr/src/app
 
 # set environment variables
 ENV PYTHONUNBUFFERED=1
@@ -34,12 +31,12 @@ RUN pip install flake8==6.0.0
 # W503はflake8のデフォルトのignoreに入っているらしいので追加
 # https://qiita.com/nakamasato/items/eecd50dcaa1797846e62
 # TODO: 自分でも調べる
-COPY . /emoemo/
+COPY . /usr/src/app/
 RUN flake8 --ignore=E501,F401,W503 .
 
 # install python dependencies
 COPY requirements/requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /emoemo/wheels -r requirements.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 #########
 # FINAL #
@@ -50,14 +47,14 @@ FROM python:3.12.2
 
 # create directory for the app user
 # 最初の `WORKDIR /usr/src/app` とは何が違うの？
-RUN mkdir -p /emoemo
+RUN mkdir -p /home/app
 
 # create the app user
 RUN addgroup --system app && adduser --system --group app
 
 # create the appropriate directories
-ENV HOME=/emoemo
-ENV APP_HOME=/emoemo/web
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/staticfiles
 RUN mkdir $APP_HOME/mediafiles
@@ -69,8 +66,8 @@ WORKDIR $APP_HOME
 #       RUN apt-get update && apt-get install -y --no-install-recommends netcat から `netcat-traditional` に変更
 #       https://stackoverflow.com/questions/75052023/package-netcat-has-no-installation-candidate-ubuntu-22-10-kinetic-redmail
 RUN apt-get update && apt-get install -y --no-install-recommends netcat-traditional
-COPY --from=builder /emoemo/wheels /wheels
-COPY --from=builder /emoemo/requirements/requirements.txt .
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
@@ -82,12 +79,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
 
 # copy entrypoint.sh
 # NOTE: entrypoint.prod.sh を作成しても良いのかも？
-COPY ./entrypoint.sh /emoemo/entrypoint.sh
-RUN sed -i 's/\r$//g' /emoemo/entrypoint.sh
-RUN chmod +x /emoemo/entrypoint.sh
+COPY ./entrypoint.sh .
+RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.sh
+RUN chmod +x  $APP_HOME/entrypoint.sh
 
 # copy project
-COPY . $APP_HOME
+COPY .. $APP_HOME
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
@@ -96,4 +93,4 @@ RUN chown -R app:app $APP_HOME
 USER app
 
 # run entrypoint.sh
-ENTRYPOINT ["/emoemo/entrypoint.sh"]
+ENTRYPOINT ["/home/app/web/entrypoint.sh"]

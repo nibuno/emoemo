@@ -25,7 +25,10 @@ class Emoji:
     def get_save_file_path(self) -> str:
         file_stem: str = "_".join(self.text.splitlines())
         file_name: str = file_stem + self.file_extension
-        save_file_path: str = settings.MEDIA_ROOT + file_name
+        # NOTE: settings.py では以下のようにしてもなぜかスラッシュが付与されないので、ここで付与している
+        # 設定値: MEDIA_ROOT = str(BASE_DIR) + "/" + "media"
+        # path: /usr/src/app/mediahoge_fuga.png
+        save_file_path: str = settings.MEDIA_ROOT + "/" + file_name
         return save_file_path
 
     def get_split_size(self) -> int:
