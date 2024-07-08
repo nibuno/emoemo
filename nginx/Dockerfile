@@ -1,3 +1,5 @@
+# 関係ないと思ったバージョンの違いで失敗していた
+# TODO: ブログを書いたら削除する
 FROM nginx:1.25
 
 RUN rm /etc/nginx/conf.d/default.conf
