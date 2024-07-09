@@ -11,7 +11,7 @@ services:
       - ./.env
 
   db:
-    image: postgres:16.3
+    build: ./db
     volumes:
       # NOTE: volumesに関する記述を変えることで
       #       environmentに設定した値が反映されるようになった
