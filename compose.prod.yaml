@@ -18,7 +18,6 @@ services:
       - db
   db:
     build: ./db
-    image: postgres:16.3
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     # environment: があるとenv_file: が反映されないようだった
