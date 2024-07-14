@@ -11,7 +11,7 @@ data
 /.idea/emoemo.iml
 /application/.env
 /.idea/vcs.xml
-.env
+.env.dev
 docker-compose.override.yml
 /.env.prod
 /.env.prod.db
