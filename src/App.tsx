@@ -37,7 +37,7 @@ function App() {
         </a>
         {" | "}
         <a
-          href="https://github.com/nibuno/emoemo2"
+          href="https://github.com/nibuno/emoemo"
           target="_blank"
           rel="noopener noreferrer"
           className="text-gray-600 hover:text-gray-900"

@@ -1,8 +1,6 @@
-# emoemo2
+# emoemo
 
 Slack向けemoji作成Webアプリケーション。
-
-[emoemo](https://github.com/nibuno/emoemo)というアプリケーションを既に作成していましたが、別の技術スタックで開発するため、別リポジトリを作成しました。
 
 ## 技術スタック
 

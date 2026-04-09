@@ -11,7 +11,7 @@
 ## 開発コマンド
 
 ```bash
-npm run dev      # 開発サーバー起動 → http://localhost:5173/emoemo2/
+npm run dev      # 開発サーバー起動 → http://localhost:5173/emoemo/
 npm run build    # 本番ビルド
 npm run lint     # ESLint実行
 npm run preview  # ビルド後のプレビュー
