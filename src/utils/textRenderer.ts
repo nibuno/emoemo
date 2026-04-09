@@ -123,7 +123,8 @@ export function renderTextToCanvas(
 
   // 3. トリミング済みの行をキャンバスにフィットさせて描画
   //    高さ優先：縦はフルに使い、横幅が溢れる場合のみ圧縮する
-  const padding = 0.04;
+  //    padding は端のクリップ防止の安全マージンのみ確保
+  const padding = 0.02;
   const maxWidth = canvasWidth * (1 - padding * 2);
   const maxHeight = canvasHeight * (1 - padding * 2);
 
