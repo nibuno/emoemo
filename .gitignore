@@ -25,3 +25,7 @@ dist-ssr
 
 # Playwright CLI artifacts (screenshots, downloads, snapshots)
 .playwright-cli
+
+# Personal/local config
+.npmrc
+.claude
