@@ -1,115 +1,104 @@
-import { useState, useEffect, useCallback } from "react";
-import Preview from "./Preview";
-import PreviewThumbnail from "./PreviewThumbnail";
-import type { CanvasSize } from "../types";
+import { useEffect, useRef } from "react";
+import { renderTextToCanvas } from "../utils/textRenderer";
 
-interface PreviewSettings {
-  text: string;
-  textColor: string;
-  backgroundColor: string;
+interface Font {
+  value: string;
+  label: string;
 }
 
 interface PreviewGridProps {
-  settings: PreviewSettings;
-  canvasSize: CanvasSize;
+  text: string;
+  textColor: string;
+  backgroundColor: string;
+  fonts: readonly Font[];
+  selectedFontIndex: number;
+  onFontSelect: (index: number) => void;
 }
 
-const FONTS = [
-  { value: "'Noto Sans JP'", label: "ゴシック" },
-  { value: "'M PLUS Rounded 1c'", label: "丸ゴシック" },
-  { value: "'Noto Serif JP'", label: "明朝体" },
-  { value: "'Zen Kaku Gothic New'", label: "モダン" },
-  { value: "'Mochiy Pop One'", label: "ポップ" },
-  { value: "'Hachi Maru Pop'", label: "手書き" },
-];
+const CANVAS_SIZE = 128;
 
-function PreviewGrid({ settings, canvasSize }: PreviewGridProps) {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const selectedFont = FONTS[selectedIndex];
-
-  const handlePrev = useCallback(() => {
-    setSelectedIndex((prev) => (prev === 0 ? FONTS.length - 1 : prev - 1));
-  }, []);
-
-  const handleNext = useCallback(() => {
-    setSelectedIndex((prev) => (prev === FONTS.length - 1 ? 0 : prev + 1));
-  }, []);
+function FontCard({
+  text,
+  textColor,
+  backgroundColor,
+  font,
+  isSelected,
+  onClick,
+}: {
+  text: string;
+  textColor: string;
+  backgroundColor: string;
+  font: Font;
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") {
-        handlePrev();
-      } else if (e.key === "ArrowRight") {
-        handleNext();
-      }
-    };
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handlePrev, handleNext]);
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = CANVAS_SIZE * dpr;
+    canvas.height = CANVAS_SIZE * dpr;
+    ctx.scale(dpr, dpr);
+
+    const isEmpty = !text.trim();
+    const displayText = isEmpty ? "テキストを\n入力してね" : text;
+
+    renderTextToCanvas(ctx, {
+      lines: displayText.split("\n"),
+      fontFamily: font.value,
+      textColor: isEmpty ? "#aaaaaa" : textColor,
+      backgroundColor,
+      canvasWidth: CANVAS_SIZE,
+      canvasHeight: CANVAS_SIZE,
+    });
+  }, [text, textColor, backgroundColor, font.value]);
 
   return (
-    <div className="p-6">
-      <div className="flex justify-center items-center gap-4 mb-6">
-        <button
-          type="button"
-          onClick={handlePrev}
-          className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-          aria-label="前のフォント"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 text-gray-600"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </button>
-        <Preview
-          settings={settings}
-          canvasSize={canvasSize}
-          fontFamily={selectedFont.value}
-          fontLabel={selectedFont.label}
-        />
-        <button
-          type="button"
-          onClick={handleNext}
-          className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-          aria-label="次のフォント"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 text-gray-600"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
-      </div>
-      <div className="flex justify-center gap-2">
-        {FONTS.map((font, index) => (
-          <PreviewThumbnail
+    <button
+      onClick={onClick}
+      className={`
+        flex flex-col items-center gap-2 p-3 rounded-lg border-2 bg-white
+        transition-all duration-150 hover:border-gray-400
+        ${isSelected
+          ? 'border-gray-800 shadow-md'
+          : 'border-gray-200'}
+      `}
+    >
+      <canvas
+        ref={canvasRef}
+        className="rounded"
+        style={{ width: 80, height: 80 }}
+      />
+      <span className={`text-xs transition-colors ${
+        isSelected ? 'text-gray-900 font-bold' : 'text-gray-500'
+      }`}>
+        {font.label}
+      </span>
+    </button>
+  );
+}
+
+function PreviewGrid({ text, textColor, backgroundColor, fonts, selectedFontIndex, onFontSelect }: PreviewGridProps) {
+  return (
+    <div>
+      <label className="block text-sm font-bold text-gray-700 mb-2">
+        フォント
+      </label>
+      <div className="grid grid-cols-3 gap-3">
+        {fonts.map((font, index) => (
+          <FontCard
             key={font.value}
-            settings={settings}
-            canvasSize={canvasSize}
-            fontFamily={font.value}
-            fontLabel={font.label}
-            isSelected={index === selectedIndex}
-            onClick={() => setSelectedIndex(index)}
+            text={text}
+            textColor={textColor}
+            backgroundColor={backgroundColor}
+            font={font}
+            isSelected={selectedFontIndex === index}
+            onClick={() => onFontSelect(index)}
           />
         ))}
       </div>
