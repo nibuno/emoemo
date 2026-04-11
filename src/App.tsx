@@ -32,14 +32,6 @@ function App() {
   const [text, setText] = useState("");
   const [textColor, setTextColor] = useState('#000000');
   const [selectedFontIndex, setSelectedFontIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // LLM 連携は後で実装
-  const handleAutoSelect = () => {
-    if (!text.trim()) return;
-    setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 1500); // placeholder
-  };
 
   const handleDownload = useCallback(() => {
     if (!text.trim()) return;
@@ -89,15 +81,13 @@ function App() {
       {/* メインコンテンツ — 縦一直線 */}
       <main className="max-w-2xl mx-auto px-8 py-8 flex flex-col gap-6">
 
-        {/* テキスト・おまかせ・色 */}
+        {/* テキスト・色 */}
         <SettingsPanel
           text={text}
           textColor={textColor}
-          isLoading={isLoading}
           colorOptions={COLOR_OPTIONS}
           onTextChange={setText}
           onColorChange={setTextColor}
-          onAutoSelect={handleAutoSelect}
         />
 
         {/* フォントプレビュー */}
