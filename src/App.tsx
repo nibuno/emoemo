@@ -74,8 +74,8 @@ function App() {
     <div className="min-h-screen bg-white">
 
       {/* ヘッダー */}
-      <header className="border-b border-gray-200 px-8 py-4">
-        <div className="max-w-2xl mx-auto flex items-baseline gap-3">
+      <header className="border-b border-gray-200">
+        <div className="max-w-2xl mx-auto px-8 py-4 flex items-baseline gap-3">
           <h1
             className="text-2xl font-bold text-gray-900 cursor-default hover:animate-wiggle"
             style={{ display: 'inline-block' }}
