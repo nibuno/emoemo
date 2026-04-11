@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nibuno.github.io/emoemo/sitemap.xml
