@@ -71,7 +71,8 @@ function FontCard({
     >
       <canvas
         ref={canvasRef}
-        className="rounded w-full aspect-square"
+        className="rounded"
+        style={{ width: 80, height: 80 }}
       />
       <span className={`text-xs transition-colors ${
         isSelected ? 'text-gray-900 font-bold' : 'text-gray-500'
