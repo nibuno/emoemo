@@ -62,7 +62,7 @@ function FontCard({
     <button
       onClick={onClick}
       className={`
-        flex flex-col items-center gap-2 p-3 rounded-lg border-2 bg-white
+        flex flex-col items-center gap-1 p-1.5 rounded-lg border-2 bg-white
         transition-all duration-150 hover:border-gray-400
         ${isSelected
           ? 'border-gray-800 shadow-md'
@@ -71,8 +71,8 @@ function FontCard({
     >
       <canvas
         ref={canvasRef}
-        className="rounded"
-        style={{ width: 80, height: 80 }}
+        className="rounded border border-gray-100"
+        style={{ width: 72, height: 72 }}
       />
       <span className={`text-xs transition-colors ${
         isSelected ? 'text-gray-900 font-bold' : 'text-gray-500'
@@ -89,7 +89,7 @@ function PreviewGrid({ text, textColor, backgroundColor, fonts, selectedFontInde
       <label className="block text-sm font-bold text-gray-700 mb-2">
         フォント
       </label>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-6 gap-2">
         {fonts.map((font, index) => (
           <FontCard
             key={font.value}

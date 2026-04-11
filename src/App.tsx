@@ -101,7 +101,7 @@ function App() {
         />
 
         {/* ダウンロード */}
-        <div className="flex justify-end">
+        <div className="flex justify-center">
           <button
             onClick={handleDownload}
             disabled={!text.trim()}
