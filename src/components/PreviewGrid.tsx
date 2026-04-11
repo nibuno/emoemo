@@ -1,6 +1,15 @@
 import { useEffect, useRef } from "react";
 import { renderTextToCanvas } from "../utils/textRenderer";
 
+/** HEXカラーを指定割合だけ暗くする */
+function darkenHex(hex: string, amount: number = 0.25): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const d = (v: number) => Math.round(v * (1 - amount)).toString(16).padStart(2, '0');
+  return `#${d(r)}${d(g)}${d(b)}`;
+}
+
 interface Font {
   value: string;
   label: string;
@@ -63,20 +72,27 @@ function FontCard({
       onClick={onClick}
       className={`
         flex flex-col items-center gap-1 p-1.5 rounded-lg border-2 bg-white
-        transition-all duration-150 hover:border-gray-400
+        transition-all duration-150
         ${isSelected
-          ? 'border-gray-800 shadow-md'
-          : 'border-gray-200'}
+          ? 'shadow-md'
+          : 'border-gray-200 hover:border-[var(--card-hover)]'}
       `}
+      style={{
+        '--card-hover': textColor,
+        ...(isSelected ? { borderColor: darkenHex(textColor) } : {}),
+      } as React.CSSProperties}
     >
       <canvas
         ref={canvasRef}
         className="rounded border border-gray-100"
         style={{ width: 72, height: 72 }}
       />
-      <span className={`text-xs transition-colors ${
-        isSelected ? 'text-gray-900 font-bold' : 'text-gray-500'
-      }`}>
+      <span
+        className={`text-xs font-bold transition-colors ${
+          isSelected ? '' : 'text-gray-500'
+        }`}
+        style={isSelected ? { color: darkenHex(textColor) } : undefined}
+      >
         {font.label}
       </span>
     </button>
