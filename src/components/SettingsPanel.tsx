@@ -81,7 +81,7 @@ function SettingsPanel({
         <label className="block text-sm font-bold text-gray-700 mb-2">
           文字色
         </label>
-        <div className="flex justify-between">
+        <div className="flex gap-3 flex-wrap">
           {colorOptions.map((color) => (
             <button
               key={color.value}
