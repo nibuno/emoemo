@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
+import "./App.css";
 import SettingsPanel from "./components/SettingsPanel";
 import PreviewGrid from "./components/PreviewGrid";
 import { renderTextToCanvas } from "./utils/textRenderer";
@@ -32,6 +33,70 @@ function App() {
   const [text, setText] = useState("");
   const [textColor, setTextColor] = useState('#000000');
   const [selectedFontIndex, setSelectedFontIndex] = useState(0);
+  const logoRef = useRef<HTMLHeadingElement>(null);
+  const animIndexRef = useRef(0);
+  const clickCountRef = useRef(0);
+  const clickTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  const LOGO_ANIMATIONS: [Keyframe[], KeyframeAnimationOptions][] = [
+    // ぽこっと押し込み
+    [
+      [{ transform: 'scale(1)' }, { transform: 'scale(0.88)' }, { transform: 'scale(1.04)' }, { transform: 'scale(1)' }],
+      { duration: 250, easing: 'ease-in-out' },
+    ],
+    // ぷるぷる
+    [
+      [{ transform: 'rotate(0)' }, { transform: 'rotate(-8deg)' }, { transform: 'rotate(8deg)' }, { transform: 'rotate(-4deg)' }, { transform: 'rotate(4deg)' }, { transform: 'rotate(0)' }],
+      { duration: 400, easing: 'ease-in-out' },
+    ],
+    // バウンス
+    [
+      [{ transform: 'translateY(0)' }, { transform: 'translateY(-12px)' }, { transform: 'translateY(0)' }, { transform: 'translateY(-5px)' }, { transform: 'translateY(0)' }],
+      { duration: 400, easing: 'ease-in-out' },
+    ],
+    // くるっと回転
+    [
+      [{ transform: 'rotate(0) scale(1)' }, { transform: 'rotate(360deg) scale(1.05)' }, { transform: 'rotate(360deg) scale(1)' }],
+      { duration: 500, easing: 'ease-in-out' },
+    ],
+  ];
+
+  const playEscapeAnimation = useCallback(() => {
+    const el = logoRef.current;
+    if (!el) return;
+    // 画面外にすっ飛んでいって、しれっと戻ってくる
+    const angle = Math.random() * Math.PI * 2;
+    const distance = Math.max(window.innerWidth, window.innerHeight);
+    const tx = Math.cos(angle) * distance;
+    const ty = Math.sin(angle) * distance;
+    el.animate(
+      [
+        { transform: 'translate(0, 0) rotate(0) scale(1)', opacity: 1 },
+        { transform: `translate(${tx}px, ${ty}px) rotate(720deg) scale(0.1)`, opacity: 0, offset: 0.4 },
+        { transform: `translate(${tx}px, ${ty}px) rotate(720deg) scale(0)`, opacity: 0, offset: 0.6 },
+        { transform: 'translate(0, -20px) rotate(0) scale(1.1)', opacity: 1, offset: 0.85 },
+        { transform: 'translate(0, 0) rotate(0) scale(1)', opacity: 1 },
+      ],
+      { duration: 1500, easing: 'ease-in-out' }
+    );
+  }, []);
+
+  const handleLogoClick = useCallback(() => {
+    // 連打カウント
+    clickCountRef.current++;
+    clearTimeout(clickTimerRef.current);
+    clickTimerRef.current = setTimeout(() => { clickCountRef.current = 0; }, 500);
+
+    if (clickCountRef.current >= 10) {
+      clickCountRef.current = 0;
+      playEscapeAnimation();
+      return;
+    }
+
+    const [keyframes, options] = LOGO_ANIMATIONS[animIndexRef.current % LOGO_ANIMATIONS.length];
+    animIndexRef.current++;
+    logoRef.current?.animate(keyframes, options);
+  }, [playEscapeAnimation]);
 
   const handleDownload = useCallback(() => {
     if (!text.trim()) return;
@@ -69,12 +134,14 @@ function App() {
       <header className="border-b border-gray-200">
         <div className="max-w-2xl mx-auto px-8 py-4 flex items-baseline gap-3">
           <h1
-            className="text-2xl font-bold text-gray-900 cursor-default hover:animate-wiggle"
+            ref={logoRef}
+            className="text-2xl font-bold text-gray-900 cursor-pointer select-none hover:animate-wiggle"
             style={{ display: 'inline-block' }}
+            onClick={handleLogoClick}
           >
             emoemo
           </h1>
-          <span className="text-sm text-gray-500">かんたん emoji メーカー</span>
+          <span className="text-sm text-gray-500 select-none">かんたん emoji メーカー</span>
         </div>
       </header>
 
