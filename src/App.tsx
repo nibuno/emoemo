@@ -106,7 +106,7 @@ function App() {
             onClick={handleDownload}
             disabled={!text.trim()}
             className={`
-              px-6 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2 transition-colors duration-200
+              px-6 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2
               ${text.trim()
                 ? 'text-white cursor-pointer active:scale-[0.98]'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
