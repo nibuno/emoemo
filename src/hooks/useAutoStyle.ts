@@ -6,12 +6,18 @@ type Status = "idle" | "loading" | "error";
 export function useAutoStyle() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [reason, setReason] = useState<string | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     return () => {
       controllerRef.current?.abort();
     };
+  }, []);
+
+  const reset = useCallback(() => {
+    setError(null);
+    setReason(null);
   }, []);
 
   const suggest = useCallback(async (text: string): Promise<AutoStyleResult | null> => {
@@ -21,14 +27,17 @@ export function useAutoStyle() {
 
     setStatus("loading");
     setError(null);
+    setReason(null);
 
     try {
       const result = await fetchAutoStyle(text, controller.signal);
-      if (controller.signal.aborted) return null;
       setStatus("idle");
+      setReason(result.reason ?? null);
       return result;
     } catch (err) {
-      if (controller.signal.aborted) return null;
+      if (err instanceof DOMException && err.name === "AbortError") {
+        return null;
+      }
       setStatus("error");
       setError("うまく選べませんでした。もう一度試してね");
       console.error(err);
@@ -36,5 +45,5 @@ export function useAutoStyle() {
     }
   }, []);
 
-  return { suggest, status, error };
+  return { suggest, reset, status, error, reason };
 }
