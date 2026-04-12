@@ -29,3 +29,7 @@ dist-ssr
 # Personal/local config
 .npmrc
 .claude
+
+# Env files (keep .env.example and .env.production tracked; VITE_* are public by design)
+.env
+.env.local
