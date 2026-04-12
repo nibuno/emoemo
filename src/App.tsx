@@ -3,6 +3,7 @@ import "./App.css";
 import SettingsPanel from "./components/SettingsPanel";
 import PreviewGrid from "./components/PreviewGrid";
 import { renderTextToCanvas } from "./utils/textRenderer";
+import { useAutoStyle } from "./hooks/useAutoStyle";
 
 export const COLOR_OPTIONS = [
   { value: '#000000', label: '黒' },
@@ -33,6 +34,7 @@ function App() {
   const [text, setText] = useState("");
   const [textColor, setTextColor] = useState('#000000');
   const [selectedFontIndex, setSelectedFontIndex] = useState(0);
+  const { suggest, status: autoStyleStatus, error: autoStyleError } = useAutoStyle();
   const logoRef = useRef<HTMLHeadingElement>(null);
   const animIndexRef = useRef(0);
   const clickCountRef = useRef(0);
@@ -94,6 +96,14 @@ function App() {
     logoRef.current?.animate(keyframes, options);
   }, [playEscapeAnimation]);
 
+  const handleSurprise = useCallback(async () => {
+    if (!text.trim()) return;
+    const result = await suggest(text);
+    if (!result) return;
+    setTextColor(COLOR_OPTIONS[result.colorIndex].value);
+    setSelectedFontIndex(result.fontIndex);
+  }, [text, suggest]);
+
   const handleDownload = useCallback(() => {
     if (!text.trim()) return;
 
@@ -152,6 +162,9 @@ function App() {
           colorOptions={COLOR_OPTIONS}
           onTextChange={setText}
           onColorChange={setTextColor}
+          onSurprise={handleSurprise}
+          surpriseLoading={autoStyleStatus === "loading"}
+          surpriseError={autoStyleError}
         />
 
         {/* フォントプレビュー */}

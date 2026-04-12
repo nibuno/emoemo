@@ -9,6 +9,9 @@ interface SettingsPanelProps {
   colorOptions: readonly ColorOption[];
   onTextChange: (text: string) => void;
   onColorChange: (color: string) => void;
+  onSurprise: () => void;
+  surpriseLoading: boolean;
+  surpriseError: string | null;
 }
 
 function SettingsPanel({
@@ -17,7 +20,12 @@ function SettingsPanel({
   colorOptions,
   onTextChange,
   onColorChange,
+  onSurprise,
+  surpriseLoading,
+  surpriseError,
 }: SettingsPanelProps) {
+  const surpriseDisabled = !text.trim() || surpriseLoading;
+
   return (
     <div className="flex flex-col gap-6">
 
@@ -35,6 +43,34 @@ function SettingsPanel({
             focus:ring-2 focus:ring-gray-400 focus:border-transparent
             resize-none"
         />
+
+        {/* おまかせボタン */}
+        <button
+          onClick={onSurprise}
+          disabled={surpriseDisabled}
+          className={`
+            mt-2 w-full px-4 py-2 rounded-lg text-sm font-semibold
+            flex items-center justify-center gap-2 transition-colors
+            ${surpriseDisabled
+              ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+              : 'bg-gray-900 text-white hover:bg-gray-700 active:scale-[0.99]'}
+          `}
+        >
+          {surpriseLoading ? (
+            <>
+              <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.25" strokeWidth="4" />
+                <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+              </svg>
+              考え中...
+            </>
+          ) : (
+            <>🎲 おまかせ</>
+          )}
+        </button>
+        {surpriseError && (
+          <p className="mt-1 text-xs text-red-600">{surpriseError}</p>
+        )}
       </div>
 
       {/* 文字色 */}
