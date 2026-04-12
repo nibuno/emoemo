@@ -23,7 +23,7 @@ function SettingsPanel({
 
       {/* テキスト入力 */}
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-2">
+        <label className="block text-sm font-bold text-gray-700 mb-2 select-none">
           テキスト
         </label>
         <textarea
@@ -39,7 +39,7 @@ function SettingsPanel({
 
       {/* 文字色 */}
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-2">
+        <label className="block text-sm font-bold text-gray-700 mb-2 select-none">
           文字色
         </label>
         <div className="flex gap-3 flex-wrap">

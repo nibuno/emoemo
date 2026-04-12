@@ -72,7 +72,7 @@ function FontCard({
       onClick={onClick}
       className={`
         flex flex-col items-center gap-1 p-1.5 rounded-lg border-2 bg-white
-        transition-all duration-150
+        transition-all duration-150 select-none
         ${isSelected
           ? 'shadow-md'
           : 'border-gray-200 hover:border-[var(--card-hover)]'}
@@ -102,7 +102,7 @@ function FontCard({
 function PreviewGrid({ text, textColor, backgroundColor, fonts, selectedFontIndex, onFontSelect }: PreviewGridProps) {
   return (
     <div>
-      <label className="block text-sm font-bold text-gray-700 mb-2">
+      <label className="block text-sm font-bold text-gray-700 mb-2 select-none">
         フォント
       </label>
       <div className="grid grid-cols-6 gap-2">

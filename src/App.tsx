@@ -36,7 +36,6 @@ function App() {
   const logoRef = useRef<HTMLHeadingElement>(null);
   const animIndexRef = useRef(0);
   const clickCountRef = useRef(0);
-  const clickTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const LOGO_ANIMATIONS: [Keyframe[], KeyframeAnimationOptions][] = [
     // ぽこっと押し込み
@@ -82,11 +81,8 @@ function App() {
   }, []);
 
   const handleLogoClick = useCallback(() => {
-    // 連打カウント
+    // 通算10回ごとに発動
     clickCountRef.current++;
-    clearTimeout(clickTimerRef.current);
-    clickTimerRef.current = setTimeout(() => { clickCountRef.current = 0; }, 500);
-
     if (clickCountRef.current >= 10) {
       clickCountRef.current = 0;
       playEscapeAnimation();
@@ -138,6 +134,7 @@ function App() {
             className="text-2xl font-bold text-gray-900 cursor-pointer select-none hover:animate-wiggle"
             style={{ display: 'inline-block' }}
             onClick={handleLogoClick}
+            onMouseDown={(e) => e.preventDefault()}
           >
             emoemo
           </h1>
