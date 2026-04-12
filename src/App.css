@@ -1,3 +1,4 @@
+/* ホバー: ぷるぷる */
 @keyframes wiggle {
   0%, 100% { transform: rotate(0deg); }
   25% { transform: rotate(-5deg); }
@@ -7,3 +8,4 @@
 .hover\:animate-wiggle:hover {
   animation: wiggle 0.3s ease-in-out;
 }
+
