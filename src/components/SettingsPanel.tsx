@@ -12,6 +12,7 @@ interface SettingsPanelProps {
   onSurprise: () => void;
   surpriseLoading: boolean;
   surpriseError: string | null;
+  surpriseReason: string | null;
 }
 
 function SettingsPanel({
@@ -23,6 +24,7 @@ function SettingsPanel({
   onSurprise,
   surpriseLoading,
   surpriseError,
+  surpriseReason,
 }: SettingsPanelProps) {
   const surpriseDisabled = !text.trim() || surpriseLoading;
 
@@ -70,6 +72,9 @@ function SettingsPanel({
         </button>
         {surpriseError && (
           <p className="mt-1 text-xs text-red-600">{surpriseError}</p>
+        )}
+        {!surpriseError && surpriseReason && (
+          <p className="mt-1 text-xs text-gray-500">💭 {surpriseReason}</p>
         )}
       </div>
 

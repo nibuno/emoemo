@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_AUTO_STYLE_ENDPOINT: string;
+  readonly VITE_AUTO_STYLE_ENDPOINT: string | undefined;
 }
 
 interface ImportMeta {

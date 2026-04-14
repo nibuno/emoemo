@@ -1,31 +1,10 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import "./App.css";
 import SettingsPanel from "./components/SettingsPanel";
 import PreviewGrid from "./components/PreviewGrid";
 import { renderTextToCanvas } from "./utils/textRenderer";
 import { useAutoStyle } from "./hooks/useAutoStyle";
-
-export const COLOR_OPTIONS = [
-  { value: '#000000', label: '黒' },
-  { value: '#FF0000', label: '赤' },
-  { value: '#EAB308', label: '黄' },
-  { value: '#84CC16', label: '黄緑' },
-  { value: '#16A34A', label: '緑' },
-  { value: '#06B6D4', label: '水色' },
-  { value: '#2563EB', label: '青' },
-  { value: '#9333EA', label: '紫' },
-  { value: '#EC4899', label: 'ピンク' },
-  { value: '#EA580C', label: 'オレンジ' },
-] as const;
-
-export const FONTS = [
-  { value: "'Noto Sans JP'",       label: "ゴシック" },
-  { value: "'M PLUS Rounded 1c'",  label: "丸ゴシック" },
-  { value: "'Noto Serif JP'",      label: "明朝体" },
-  { value: "'Zen Kaku Gothic New'",label: "モダン" },
-  { value: "'Mochiy Pop One'",     label: "ポップ" },
-  { value: "'Hachi Maru Pop'",     label: "手書き" },
-] as const;
+import { COLOR_OPTIONS, FONTS } from "./constants";
 
 const CANVAS_SIZE = 128;
 const BACKGROUND_COLOR = "#ffffff";
@@ -34,7 +13,17 @@ function App() {
   const [text, setText] = useState("");
   const [textColor, setTextColor] = useState('#000000');
   const [selectedFontIndex, setSelectedFontIndex] = useState(0);
-  const { suggest, status: autoStyleStatus, error: autoStyleError } = useAutoStyle();
+  const {
+    suggest,
+    status: autoStyleStatus,
+    error: autoStyleError,
+    reason: autoStyleReason,
+    reset: resetAutoStyle,
+  } = useAutoStyle();
+
+  useEffect(() => {
+    resetAutoStyle();
+  }, [text, resetAutoStyle]);
   const logoRef = useRef<HTMLHeadingElement>(null);
   const animIndexRef = useRef(0);
   const clickCountRef = useRef(0);
@@ -165,6 +154,7 @@ function App() {
           onSurprise={handleSurprise}
           surpriseLoading={autoStyleStatus === "loading"}
           surpriseError={autoStyleError}
+          surpriseReason={autoStyleReason}
         />
 
         {/* フォントプレビュー */}
