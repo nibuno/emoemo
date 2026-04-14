@@ -16,6 +16,8 @@ export function useAutoStyle() {
   }, []);
 
   const reset = useCallback(() => {
+    controllerRef.current?.abort();
+    setStatus("idle");
     setError(null);
     setReason(null);
   }, []);
