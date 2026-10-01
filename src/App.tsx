@@ -2,17 +2,74 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import "./App.css";
 import SettingsPanel from "./components/SettingsPanel";
 import PreviewGrid from "./components/PreviewGrid";
+import GifFrames from "./components/GifFrames";
+import GifPreview, { type TempoOption } from "./components/GifPreview";
+import ModeSwitcher, { type OutputMode } from "./components/ModeSwitcher";
 import { renderTextToCanvas } from "./utils/textRenderer";
+import { renderAnimatedGif } from "./utils/gifRenderer";
 import { useAutoStyle } from "./hooks/useAutoStyle";
 import { COLOR_OPTIONS, FONTS } from "./constants";
+import type { GifFrame } from "./types/gif";
 
 const CANVAS_SIZE = 128;
 const BACKGROUND_COLOR = "#ffffff";
+const MAX_GIF_FRAMES = 6;
+const DEFAULT_GIF_FRAME: GifFrame = {
+  text: "",
+  textColor: "#000000",
+  fontIndex: 0,
+};
+const TEMPO_OPTIONS: readonly TempoOption[] = [
+  { label: "はやい", delay: 450 },
+  { label: "ふつう", delay: 800 },
+  { label: "ゆっくり", delay: 1200 },
+];
+
+const LOGO_ANIMATIONS: [Keyframe[], KeyframeAnimationOptions][] = [
+  [
+    [{ transform: 'scale(1)' }, { transform: 'scale(0.88)' }, { transform: 'scale(1.04)' }, { transform: 'scale(1)' }],
+    { duration: 250, easing: 'ease-in-out' },
+  ],
+  [
+    [{ transform: 'rotate(0)' }, { transform: 'rotate(-8deg)' }, { transform: 'rotate(8deg)' }, { transform: 'rotate(-4deg)' }, { transform: 'rotate(4deg)' }, { transform: 'rotate(0)' }],
+    { duration: 400, easing: 'ease-in-out' },
+  ],
+  [
+    [{ transform: 'translateY(0)' }, { transform: 'translateY(-12px)' }, { transform: 'translateY(0)' }, { transform: 'translateY(-5px)' }, { transform: 'translateY(0)' }],
+    { duration: 400, easing: 'ease-in-out' },
+  ],
+  [
+    [{ transform: 'rotate(0) scale(1)' }, { transform: 'rotate(360deg) scale(1.05)' }, { transform: 'rotate(360deg) scale(1)' }],
+    { duration: 500, easing: 'ease-in-out' },
+  ],
+];
+
+function safeFileName(text: string, extension: "png" | "gif"): string {
+  const base = text
+    .trim()
+    .replace(/\n/g, "_")
+    .replace(/[\\/:*?"<>|]/g, "_")
+    .slice(0, 60) || "emoji";
+  return `${base}.${extension}`;
+}
+
+function downloadBlob(blob: Blob, fileName: string): void {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  URL.revokeObjectURL(url);
+}
 
 function App() {
-  const [text, setText] = useState("");
-  const [textColor, setTextColor] = useState('#000000');
-  const [selectedFontIndex, setSelectedFontIndex] = useState(0);
+  const [mode, setMode] = useState<OutputMode>("image");
+  const [frames, setFrames] = useState<GifFrame[]>([{ ...DEFAULT_GIF_FRAME }]);
+  const [selectedFrameIndex, setSelectedFrameIndex] = useState(0);
+  const [tempoIndex, setTempoIndex] = useState(1);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const selectedFrame = frames[selectedFrameIndex] ?? frames[0] ?? DEFAULT_GIF_FRAME;
+  const { text, textColor, fontIndex: selectedFontIndex } = selectedFrame;
   const {
     suggest,
     status: autoStyleStatus,
@@ -23,33 +80,10 @@ function App() {
 
   useEffect(() => {
     resetAutoStyle();
-  }, [text, resetAutoStyle]);
+  }, [selectedFrameIndex, text, resetAutoStyle]);
   const logoRef = useRef<HTMLHeadingElement>(null);
   const animIndexRef = useRef(0);
   const clickCountRef = useRef(0);
-
-  const LOGO_ANIMATIONS: [Keyframe[], KeyframeAnimationOptions][] = [
-    // ぽこっと押し込み
-    [
-      [{ transform: 'scale(1)' }, { transform: 'scale(0.88)' }, { transform: 'scale(1.04)' }, { transform: 'scale(1)' }],
-      { duration: 250, easing: 'ease-in-out' },
-    ],
-    // ぷるぷる
-    [
-      [{ transform: 'rotate(0)' }, { transform: 'rotate(-8deg)' }, { transform: 'rotate(8deg)' }, { transform: 'rotate(-4deg)' }, { transform: 'rotate(4deg)' }, { transform: 'rotate(0)' }],
-      { duration: 400, easing: 'ease-in-out' },
-    ],
-    // バウンス
-    [
-      [{ transform: 'translateY(0)' }, { transform: 'translateY(-12px)' }, { transform: 'translateY(0)' }, { transform: 'translateY(-5px)' }, { transform: 'translateY(0)' }],
-      { duration: 400, easing: 'ease-in-out' },
-    ],
-    // くるっと回転
-    [
-      [{ transform: 'rotate(0) scale(1)' }, { transform: 'rotate(360deg) scale(1.05)' }, { transform: 'rotate(360deg) scale(1)' }],
-      { duration: 500, easing: 'ease-in-out' },
-    ],
-  ];
 
   const playEscapeAnimation = useCallback(() => {
     const el = logoRef.current;
@@ -89,38 +123,116 @@ function App() {
     if (!text.trim()) return;
     const result = await suggest(text);
     if (!result) return;
-    setTextColor(COLOR_OPTIONS[result.colorIndex].value);
-    setSelectedFontIndex(result.fontIndex);
-  }, [text, suggest]);
+    setFrames((current) => current.map((frame, index) => (
+      index === selectedFrameIndex
+        ? {
+            ...frame,
+            textColor: COLOR_OPTIONS[result.colorIndex].value,
+            fontIndex: result.fontIndex,
+          }
+        : frame
+    )));
+  }, [selectedFrameIndex, text, suggest]);
 
-  const handleDownload = useCallback(() => {
-    if (!text.trim()) return;
+  const handleModeChange = useCallback((nextMode: OutputMode) => {
+    setMode(nextMode);
+    setSelectedFrameIndex(0);
+    if (nextMode === "gif") {
+      setFrames((current) => current.length >= 2
+        ? current
+        : [...current, { ...current[0], text: "" }]
+      );
+    }
+  }, []);
 
-    const canvas = document.createElement("canvas");
-    canvas.width = CANVAS_SIZE;
-    canvas.height = CANVAS_SIZE;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const handleFrameTextChange = useCallback((index: number, nextText: string) => {
+    setFrames((current) => current.map((frame, frameIndex) => (
+      frameIndex === index ? { ...frame, text: nextText } : frame
+    )));
+  }, []);
 
-    renderTextToCanvas(ctx, {
-      lines: text.split("\n"),
-      fontFamily: FONTS[selectedFontIndex].value,
-      textColor,
-      backgroundColor: BACKGROUND_COLOR,
-      canvasWidth: CANVAS_SIZE,
-      canvasHeight: CANVAS_SIZE,
-    });
+  const handleTextChange = useCallback((nextText: string) => {
+    handleFrameTextChange(selectedFrameIndex, nextText);
+  }, [handleFrameTextChange, selectedFrameIndex]);
 
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${text.replace(/\n/g, '_')}.png`;
-      link.click();
-      URL.revokeObjectURL(url);
-    }, "image/png");
-  }, [text, textColor, selectedFontIndex]);
+  const handleColorChange = useCallback((nextColor: string) => {
+    setFrames((current) => current.map((frame, index) => (
+      index === selectedFrameIndex ? { ...frame, textColor: nextColor } : frame
+    )));
+  }, [selectedFrameIndex]);
+
+  const handleFontSelect = useCallback((nextFontIndex: number) => {
+    setFrames((current) => current.map((frame, index) => (
+      index === selectedFrameIndex ? { ...frame, fontIndex: nextFontIndex } : frame
+    )));
+  }, [selectedFrameIndex]);
+
+  const handleAddFrame = useCallback(() => {
+    if (frames.length >= MAX_GIF_FRAMES) return;
+    const previousFrame = frames[frames.length - 1] ?? DEFAULT_GIF_FRAME;
+    setFrames([...frames, { ...previousFrame, text: "" }]);
+    setSelectedFrameIndex(frames.length);
+  }, [frames]);
+
+  const handleDeleteFrame = useCallback((index: number) => {
+    if (frames.length <= 2) return;
+    const next = frames.filter((_, frameIndex) => frameIndex !== index);
+    setFrames(next);
+    if (selectedFrameIndex === index) {
+      setSelectedFrameIndex(Math.min(index, next.length - 1));
+    } else if (selectedFrameIndex > index) {
+      setSelectedFrameIndex(selectedFrameIndex - 1);
+    }
+  }, [frames, selectedFrameIndex]);
+
+  const canDownload = mode === "image"
+    ? Boolean(text.trim())
+    : frames.length >= 2 && frames.every((frame) => Boolean(frame.text.trim()));
+
+  const handleDownload = useCallback(async () => {
+    if (!canDownload || isDownloading) return;
+    setIsDownloading(true);
+
+    try {
+      if (mode === "gif") {
+        const blob = await renderAnimatedGif({
+          frames: frames.map((frame) => ({
+            text: frame.text,
+            fontFamily: FONTS[frame.fontIndex].value,
+            textColor: frame.textColor,
+          })),
+          frameDelay: TEMPO_OPTIONS[tempoIndex].delay,
+          size: CANVAS_SIZE,
+        });
+        downloadBlob(blob, safeFileName(frames[0].text, "gif"));
+        return;
+      }
+
+      await document.fonts.load(`700 ${CANVAS_SIZE}px ${FONTS[selectedFontIndex].value}`, text);
+
+      const canvas = document.createElement("canvas");
+      canvas.width = CANVAS_SIZE;
+      canvas.height = CANVAS_SIZE;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      renderTextToCanvas(ctx, {
+        lines: text.split("\n"),
+        fontFamily: FONTS[selectedFontIndex].value,
+        textColor,
+        backgroundColor: BACKGROUND_COLOR,
+        canvasWidth: CANVAS_SIZE,
+        canvasHeight: CANVAS_SIZE,
+      });
+
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        downloadBlob(blob, safeFileName(text, "png"));
+      }, "image/png");
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [canDownload, frames, isDownloading, mode, selectedFontIndex, tempoIndex, text, textColor]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -144,17 +256,31 @@ function App() {
       {/* メインコンテンツ — 縦一直線 */}
       <main className="max-w-2xl mx-auto px-8 py-8 flex flex-col gap-6">
 
+        <ModeSwitcher mode={mode} onChange={handleModeChange} />
+
+        {mode === "gif" && (
+          <GifFrames
+            frames={frames}
+            selectedIndex={selectedFrameIndex}
+            onSelect={setSelectedFrameIndex}
+            onTextChange={handleFrameTextChange}
+            onAdd={handleAddFrame}
+            onDelete={handleDeleteFrame}
+          />
+        )}
+
         {/* テキスト・色 */}
         <SettingsPanel
           text={text}
           textColor={textColor}
           colorOptions={COLOR_OPTIONS}
-          onTextChange={setText}
-          onColorChange={setTextColor}
+          onTextChange={handleTextChange}
+          onColorChange={handleColorChange}
           onSurprise={handleSurprise}
           surpriseLoading={autoStyleStatus === "loading"}
           surpriseError={autoStyleError}
           surpriseReason={autoStyleReason}
+          showTextInput={mode === "image"}
         />
 
         {/* フォントプレビュー */}
@@ -164,26 +290,43 @@ function App() {
           backgroundColor={BACKGROUND_COLOR}
           fonts={FONTS}
           selectedFontIndex={selectedFontIndex}
-          onFontSelect={setSelectedFontIndex}
+          onFontSelect={handleFontSelect}
         />
+
+        {mode === "gif" && (
+          <GifPreview
+            frames={frames.map((frame) => ({
+              text: frame.text,
+              fontFamily: FONTS[frame.fontIndex].value,
+              textColor: frame.textColor,
+            }))}
+            tempoOptions={TEMPO_OPTIONS}
+            tempoIndex={tempoIndex}
+            onTempoChange={setTempoIndex}
+          />
+        )}
 
         {/* ダウンロード */}
         <div className="flex justify-center">
           <button
             onClick={handleDownload}
-            disabled={!text.trim()}
+            disabled={!canDownload || isDownloading}
             className={`
               px-6 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2
-              ${text.trim()
+              ${canDownload && !isDownloading
                 ? 'text-white cursor-pointer active:scale-[0.98]'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
             `}
-            style={text.trim() ? { backgroundColor: textColor } : undefined}
+            style={canDownload && !isDownloading
+              ? { backgroundColor: mode === "gif" ? "#111827" : textColor }
+              : undefined}
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/>
             </svg>
-            ダウンロード
+            {isDownloading
+              ? "作成中..."
+              : `${mode === "gif" ? "GIF" : "画像"}をダウンロード`}
           </button>
         </div>
 

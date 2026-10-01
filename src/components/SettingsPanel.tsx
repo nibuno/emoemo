@@ -13,6 +13,7 @@ interface SettingsPanelProps {
   surpriseLoading: boolean;
   surpriseError: string | null;
   surpriseReason: string | null;
+  showTextInput?: boolean;
 }
 
 function SettingsPanel({
@@ -25,33 +26,38 @@ function SettingsPanel({
   surpriseLoading,
   surpriseError,
   surpriseReason,
+  showTextInput = true,
 }: SettingsPanelProps) {
   const surpriseDisabled = !text.trim() || surpriseLoading;
 
   return (
     <div className="flex flex-col gap-6">
 
-      {/* テキスト入力 */}
+      {/* テキスト入力・おまかせ */}
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-2 select-none">
-          テキスト
-        </label>
-        <textarea
-          value={text}
-          onChange={(e) => onTextChange(e.target.value)}
-          placeholder={"テキストを\n入力してね"}
-          rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
-            focus:ring-2 focus:ring-gray-400 focus:border-transparent
-            resize-none"
-        />
+        {showTextInput && (
+          <>
+            <label className="block text-sm font-bold text-gray-700 mb-2 select-none">
+              テキスト
+            </label>
+            <textarea
+              value={text}
+              onChange={(e) => onTextChange(e.target.value)}
+              placeholder={"テキストを\n入力してね"}
+              rows={3}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
+                focus:ring-2 focus:ring-gray-400 focus:border-transparent
+                resize-none"
+            />
+          </>
+        )}
 
         {/* おまかせボタン */}
         <button
           onClick={onSurprise}
           disabled={surpriseDisabled}
           className={`
-            mt-2 w-full px-4 py-2 rounded-lg text-sm font-semibold
+            ${showTextInput ? "mt-2" : ""} w-full px-4 py-2 rounded-lg text-sm font-semibold
             flex items-center justify-center gap-2 transition-colors
             ${surpriseDisabled
               ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
