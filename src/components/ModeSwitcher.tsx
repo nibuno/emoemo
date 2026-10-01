@@ -11,7 +11,7 @@ function ModeSwitcher({ mode, onChange }: ModeSwitcherProps) {
       <span className="block text-sm font-bold text-gray-700 mb-2 select-none">
         形式
       </span>
-      <div className="inline-flex rounded-lg border border-gray-300 p-1" role="group" aria-label="保存形式">
+      <div className="inline-grid grid-cols-2 gap-2" role="group" aria-label="保存形式">
         {([
           ["image", "画像"],
           ["gif", "GIF"],
@@ -21,10 +21,10 @@ function ModeSwitcher({ mode, onChange }: ModeSwitcherProps) {
             type="button"
             onClick={() => onChange(value)}
             aria-pressed={mode === value}
-            className={`min-w-20 rounded-md px-4 py-1.5 text-sm font-semibold transition-colors ${
+            className={`min-w-24 rounded-lg border-2 px-4 py-2 text-center text-sm font-semibold transition-colors ${
               mode === value
-                ? "bg-gray-900 text-white"
-                : "text-gray-600 hover:bg-gray-100"
+                ? "border-gray-900 bg-gray-50 text-gray-900"
+                : "border-gray-200 bg-white text-gray-600 hover:border-gray-400"
             }`}
           >
             {label}
