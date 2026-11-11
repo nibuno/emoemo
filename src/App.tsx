@@ -172,12 +172,15 @@ function App() {
     const history = shuffle(loadEmojiHistory().filter((saved) => emojiKey(saved) !== currentKey));
     const picked = (current ? [current, ...history] : history).slice(0, MAX_RAIN_KINDS);
     const emojis = picked.length > 0 ? picked : createSampleEmojis();
-    return Promise.all(emojis.map((emoji) => renderSavedEmoji(emoji, CANVAS_SIZE)));
+    // 一部の描画に失敗しても、描けたものだけで降らせる
+    const results = await Promise.allSettled(emojis.map((emoji) => renderSavedEmoji(emoji, CANVAS_SIZE)));
+    return results.flatMap((result) => (result.status === "fulfilled" ? [result.value] : []));
   }, [frames, mode, selectedFrame, tempoIndex]);
 
   const startEmojiRain = useCallback(async () => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const sources = await createRainSources();
+    if (sources.length === 0) return;
     const newDrops = createEmojiDrops(nextDropIdRef.current, sources);
     nextDropIdRef.current += newDrops.length;
     setEmojiDrops((current) => [...current, ...newDrops].slice(-MAX_RAIN_DROPS));
