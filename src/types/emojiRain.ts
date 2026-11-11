@@ -1,6 +1,7 @@
 export interface EmojiDrop {
   id: number;
-  emoji: string;
+  /** emoemoで描いた絵文字画像（data URL） */
+  src: string;
   /** 画面幅に対する横位置（%） */
   left: number;
   size: number;

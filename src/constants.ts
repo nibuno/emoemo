@@ -19,9 +19,3 @@ export const FONTS = [
   { value: "'Mochiy Pop One'",     label: "ポップ" },
   { value: "'Hachi Maru Pop'",     label: "手書き" },
 ] as const;
-
-export const RAIN_EMOJIS = [
-  '😀', '😂', '🥳', '😍', '🤩', '😎', '🙌', '👍',
-  '🎉', '✨', '💯', '🔥', '❤️', '⭐', '🌈', '🍣',
-  '🍙', '🍩', '🐱', '🐶', '🦄', '🌸', '🍀', '🎈',
-] as const;
