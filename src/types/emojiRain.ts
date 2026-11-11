@@ -12,3 +12,14 @@ export interface EmojiDrop {
   /** 落ちる間の回転量（deg） */
   spin: number;
 }
+
+export interface SavedEmojiFrame {
+  text: string;
+  fontFamily: string;
+  textColor: string;
+}
+
+/** ダウンロードした絵文字の設定。画像はここから描き直す */
+export type SavedEmoji =
+  | { kind: "image"; frame: SavedEmojiFrame }
+  | { kind: "gif"; frames: SavedEmojiFrame[]; frameDelay: number };

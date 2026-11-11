@@ -1,4 +1,6 @@
 import { renderTextToCanvas } from "./textRenderer";
+import { renderAnimatedGif } from "./gifRenderer";
+import type { SavedEmoji } from "../types/emojiRain";
 
 interface EmojiImageOptions {
   text: string;
@@ -46,4 +48,16 @@ export function blobToDataUrl(blob: Blob): Promise<string> {
     reader.onerror = () => reject(reader.error);
     reader.readAsDataURL(blob);
   });
+}
+
+export async function renderSavedEmoji(emoji: SavedEmoji, size: number): Promise<string> {
+  if (emoji.kind === "image") {
+    return renderEmojiDataUrl({ ...emoji.frame, size });
+  }
+  const blob = await renderAnimatedGif({
+    frames: emoji.frames,
+    frameDelay: emoji.frameDelay,
+    size,
+  });
+  return blobToDataUrl(blob);
 }

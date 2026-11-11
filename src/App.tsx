@@ -8,11 +8,12 @@ import ModeSwitcher, { type OutputMode } from "./components/ModeSwitcher";
 import EmojiRain from "./components/EmojiRain";
 import { renderTextToCanvas } from "./utils/textRenderer";
 import { renderAnimatedGif } from "./utils/gifRenderer";
-import { renderEmojiDataUrl, blobToDataUrl } from "./utils/emojiImage";
+import { renderSavedEmoji } from "./utils/emojiImage";
+import { addEmojiToHistory, emojiKey, loadEmojiHistory } from "./utils/emojiHistory";
 import { useAutoStyle } from "./hooks/useAutoStyle";
 import { COLOR_OPTIONS, FONTS } from "./constants";
 import type { GifFrame } from "./types/gif";
-import type { EmojiDrop } from "./types/emojiRain";
+import type { EmojiDrop, SavedEmoji, SavedEmojiFrame } from "./types/emojiRain";
 
 const CANVAS_SIZE = 128;
 const BACKGROUND_COLOR = "#ffffff";
@@ -51,6 +52,7 @@ const RAPID_CLICK_INTERVAL_MS = 400;
 const RAPID_CLICKS_FOR_RAIN = 5;
 const RAIN_DROP_COUNT = 40;
 const MAX_RAIN_DROPS = 200;
+const MAX_RAIN_KINDS = 10;
 const SAMPLE_EMOJI_TEXT = "emo\nemo";
 
 function randomBetween(min: number, max: number): number {
@@ -59,6 +61,50 @@ function randomBetween(min: number, max: number): number {
 
 function pickRandom<T>(items: readonly T[]): T {
   return items[Math.floor(Math.random() * items.length)];
+}
+
+function shuffle<T>(items: readonly T[]): T[] {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function toSavedFrame(frame: GifFrame): SavedEmojiFrame {
+  return {
+    text: frame.text,
+    fontFamily: FONTS[frame.fontIndex].value,
+    textColor: frame.textColor,
+  };
+}
+
+/** いま作っている絵文字。テキストが空なら null */
+function toSavedEmoji(
+  mode: OutputMode,
+  frames: GifFrame[],
+  selectedFrame: GifFrame,
+  frameDelay: number,
+): SavedEmoji | null {
+  const filledFrames = frames.filter((frame) => frame.text.trim());
+  if (mode === "gif" && filledFrames.length >= 2) {
+    return { kind: "gif", frames: filledFrames.map(toSavedFrame), frameDelay };
+  }
+  const frame = mode === "gif" ? filledFrames[0] : selectedFrame;
+  if (!frame?.text.trim()) return null;
+  return { kind: "image", frame: toSavedFrame(frame) };
+}
+
+function createSampleEmojis(): SavedEmoji[] {
+  return COLOR_OPTIONS.map((color) => ({
+    kind: "image",
+    frame: {
+      text: SAMPLE_EMOJI_TEXT,
+      fontFamily: pickRandom(FONTS).value,
+      textColor: color.value,
+    },
+  }));
 }
 
 function createEmojiDrops(startId: number, sources: string[]): EmojiDrop[] {
@@ -119,36 +165,15 @@ function App() {
   const nextDropIdRef = useRef(0);
   const [emojiDrops, setEmojiDrops] = useState<EmojiDrop[]>([]);
 
-  // いま作っている絵文字を降らせる。未入力ならサンプルの絵文字を降らせる
+  // いま作っている絵文字 + ダウンロード履歴から最大10種類。どちらも無ければサンプル
   const createRainSources = useCallback(async (): Promise<string[]> => {
-    const filledFrames = frames.filter((frame) => frame.text.trim());
-    if (mode === "gif" && filledFrames.length >= 2) {
-      const blob = await renderAnimatedGif({
-        frames: filledFrames.map((frame) => ({
-          text: frame.text,
-          fontFamily: FONTS[frame.fontIndex].value,
-          textColor: frame.textColor,
-        })),
-        frameDelay: TEMPO_OPTIONS[tempoIndex].delay,
-        size: CANVAS_SIZE,
-      });
-      return [await blobToDataUrl(blob)];
-    }
-
-    const sourceFrames = filledFrames.length > 0
-      ? filledFrames
-      : COLOR_OPTIONS.map((color) => ({
-          text: SAMPLE_EMOJI_TEXT,
-          textColor: color.value,
-          fontIndex: Math.floor(Math.random() * FONTS.length),
-        }));
-    return Promise.all(sourceFrames.map((frame) => renderEmojiDataUrl({
-      text: frame.text,
-      fontFamily: FONTS[frame.fontIndex].value,
-      textColor: frame.textColor,
-      size: CANVAS_SIZE,
-    })));
-  }, [frames, mode, tempoIndex]);
+    const current = toSavedEmoji(mode, frames, selectedFrame, TEMPO_OPTIONS[tempoIndex].delay);
+    const currentKey = current ? emojiKey(current) : null;
+    const history = shuffle(loadEmojiHistory().filter((saved) => emojiKey(saved) !== currentKey));
+    const picked = (current ? [current, ...history] : history).slice(0, MAX_RAIN_KINDS);
+    const emojis = picked.length > 0 ? picked : createSampleEmojis();
+    return Promise.all(emojis.map((emoji) => renderSavedEmoji(emoji, CANVAS_SIZE)));
+  }, [frames, mode, selectedFrame, tempoIndex]);
 
   const startEmojiRain = useCallback(async () => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -293,6 +318,11 @@ function App() {
           size: CANVAS_SIZE,
         });
         downloadBlob(blob, safeFileName(frames[0].text, "gif"));
+        addEmojiToHistory({
+          kind: "gif",
+          frames: frames.map(toSavedFrame),
+          frameDelay: TEMPO_OPTIONS[tempoIndex].delay,
+        });
         return;
       }
 
@@ -316,11 +346,12 @@ function App() {
       canvas.toBlob((blob) => {
         if (!blob) return;
         downloadBlob(blob, safeFileName(text, "png"));
+        addEmojiToHistory({ kind: "image", frame: toSavedFrame(selectedFrame) });
       }, "image/png");
     } finally {
       setIsDownloading(false);
     }
-  }, [canDownload, frames, isDownloading, mode, selectedFontIndex, tempoIndex, text, textColor]);
+  }, [canDownload, frames, isDownloading, mode, selectedFontIndex, selectedFrame, tempoIndex, text, textColor]);
 
   return (
     <div className="min-h-screen bg-white">
