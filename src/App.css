@@ -9,3 +9,19 @@
   animation: wiggle 0.3s ease-in-out;
 }
 
+
+/* ロゴ連打: 絵文字の雨 */
+@keyframes emoji-fall {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to { transform: translate(var(--drift), calc(100vh + 6rem)) rotate(var(--spin)); }
+}
+
+.emoji-drop {
+  position: absolute;
+  top: -4rem;
+  line-height: 1;
+  user-select: none;
+  animation-name: emoji-fall;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.9, 0.6);
+  animation-fill-mode: both;
+}

@@ -5,11 +5,13 @@ import PreviewGrid from "./components/PreviewGrid";
 import GifFrames from "./components/GifFrames";
 import GifPreview, { type TempoOption } from "./components/GifPreview";
 import ModeSwitcher, { type OutputMode } from "./components/ModeSwitcher";
+import EmojiRain from "./components/EmojiRain";
 import { renderTextToCanvas } from "./utils/textRenderer";
 import { renderAnimatedGif } from "./utils/gifRenderer";
 import { useAutoStyle } from "./hooks/useAutoStyle";
-import { COLOR_OPTIONS, FONTS } from "./constants";
+import { COLOR_OPTIONS, FONTS, RAIN_EMOJIS } from "./constants";
 import type { GifFrame } from "./types/gif";
+import type { EmojiDrop } from "./types/emojiRain";
 
 const CANVAS_SIZE = 128;
 const BACKGROUND_COLOR = "#ffffff";
@@ -43,6 +45,28 @@ const LOGO_ANIMATIONS: [Keyframe[], KeyframeAnimationOptions][] = [
     { duration: 500, easing: 'ease-in-out' },
   ],
 ];
+
+const RAPID_CLICK_INTERVAL_MS = 400;
+const RAPID_CLICKS_FOR_RAIN = 5;
+const RAIN_DROP_COUNT = 40;
+const MAX_RAIN_DROPS = 200;
+
+function randomBetween(min: number, max: number): number {
+  return min + Math.random() * (max - min);
+}
+
+function createEmojiDrops(startId: number): EmojiDrop[] {
+  return Array.from({ length: RAIN_DROP_COUNT }, (_, i) => ({
+    id: startId + i,
+    emoji: RAIN_EMOJIS[Math.floor(Math.random() * RAIN_EMOJIS.length)],
+    left: randomBetween(0, 100),
+    size: randomBetween(24, 48),
+    duration: randomBetween(2000, 3500),
+    delay: randomBetween(0, 1500),
+    drift: randomBetween(-80, 80),
+    spin: randomBetween(-360, 360),
+  }));
+}
 
 function safeFileName(text: string, extension: "png" | "gif"): string {
   const base = text
@@ -84,6 +108,21 @@ function App() {
   const logoRef = useRef<HTMLHeadingElement>(null);
   const animIndexRef = useRef(0);
   const clickCountRef = useRef(0);
+  const rapidClickCountRef = useRef(0);
+  const lastClickTimeRef = useRef(0);
+  const nextDropIdRef = useRef(0);
+  const [emojiDrops, setEmojiDrops] = useState<EmojiDrop[]>([]);
+
+  const startEmojiRain = useCallback(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const newDrops = createEmojiDrops(nextDropIdRef.current);
+    nextDropIdRef.current += newDrops.length;
+    setEmojiDrops((current) => [...current, ...newDrops].slice(-MAX_RAIN_DROPS));
+  }, []);
+
+  const handleEmojiDropEnd = useCallback((id: number) => {
+    setEmojiDrops((current) => current.filter((drop) => drop.id !== id));
+  }, []);
 
   const playEscapeAnimation = useCallback(() => {
     const el = logoRef.current;
@@ -106,6 +145,17 @@ function App() {
   }, []);
 
   const handleLogoClick = useCallback(() => {
+    // 素早く5連打で絵文字の雨
+    const now = performance.now();
+    rapidClickCountRef.current = now - lastClickTimeRef.current < RAPID_CLICK_INTERVAL_MS
+      ? rapidClickCountRef.current + 1
+      : 1;
+    lastClickTimeRef.current = now;
+    if (rapidClickCountRef.current >= RAPID_CLICKS_FOR_RAIN) {
+      rapidClickCountRef.current = 0;
+      startEmojiRain();
+    }
+
     // 通算10回ごとに発動
     clickCountRef.current++;
     if (clickCountRef.current >= 10) {
@@ -117,7 +167,7 @@ function App() {
     const [keyframes, options] = LOGO_ANIMATIONS[animIndexRef.current % LOGO_ANIMATIONS.length];
     animIndexRef.current++;
     logoRef.current?.animate(keyframes, options);
-  }, [playEscapeAnimation]);
+  }, [playEscapeAnimation, startEmojiRain]);
 
   const handleSurprise = useCallback(async () => {
     if (!text.trim()) return;
@@ -236,6 +286,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
+      <EmojiRain drops={emojiDrops} onDropEnd={handleEmojiDropEnd} />
 
       {/* ヘッダー */}
       <header className="border-b border-gray-200">
