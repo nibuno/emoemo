@@ -1,19 +1,14 @@
 import { renderTextToCanvas } from "./textRenderer";
 import { renderAnimatedGif } from "./gifRenderer";
+import type { EmojiImageOptions } from "../types";
 import type { SavedEmoji } from "../types/emojiRain";
 
-interface EmojiImageOptions {
-  text: string;
-  fontFamily: string;
-  textColor: string;
-  size: number;
-}
-
-/** 背景透過で絵文字を描き、data URL で返す */
+/** 絵文字を描き、PNG の data URL で返す */
 export async function renderEmojiDataUrl({
   text,
   fontFamily,
   textColor,
+  backgroundColor = null,
   size,
 }: EmojiImageOptions): Promise<string> {
   await document.fonts.load(`700 ${size}px ${fontFamily}`, text);
@@ -28,7 +23,7 @@ export async function renderEmojiDataUrl({
     lines: text.split("\n"),
     fontFamily,
     textColor,
-    backgroundColor: null,
+    backgroundColor,
     canvasWidth: size,
     canvasHeight: size,
   });
