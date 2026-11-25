@@ -1,4 +1,4 @@
-export type BackgroundMode = "white" | "transparent";
+export type BackgroundMode = "white" | "dark" | "transparent";
 
 export interface EmojiSettings {
   text: string;

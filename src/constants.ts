@@ -1,3 +1,11 @@
+import type { BackgroundMode } from "./types";
+
+export const BACKGROUND_COLORS: Record<BackgroundMode, string | null> = {
+  white: "#ffffff",
+  dark: "#1A1D21",
+  transparent: null,
+};
+
 export const COLOR_OPTIONS = [
   { value: '#000000', label: '黒' },
   { value: '#FF0000', label: '赤' },
