@@ -461,7 +461,7 @@ function App() {
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
             `}
             style={canDownload && !isDownloading
-              ? { backgroundColor: mode === "gif" ? "#111827" : textColor }
+              ? { backgroundColor: textColor }
               : undefined}
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
