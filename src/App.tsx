@@ -11,7 +11,7 @@ import { renderAnimatedGif } from "./utils/gifRenderer";
 import { renderSavedEmoji } from "./utils/emojiImage";
 import { addEmojiToHistory, emojiKey, loadEmojiHistory } from "./utils/emojiHistory";
 import { useAutoStyle } from "./hooks/useAutoStyle";
-import { COLOR_OPTIONS, FONTS } from "./constants";
+import { BACKGROUND_COLORS, COLOR_OPTIONS, FONTS } from "./constants";
 import type { BackgroundMode } from "./types";
 import type { GifFrame } from "./types/gif";
 import type { EmojiDrop, SavedEmoji, SavedEmojiFrame } from "./types/emojiRain";
@@ -142,7 +142,7 @@ function downloadBlob(blob: Blob, fileName: string): void {
 function App() {
   const [mode, setMode] = useState<OutputMode>("image");
   const [background, setBackground] = useState<BackgroundMode>("white");
-  const backgroundColor = background === "white" ? "#ffffff" : null;
+  const backgroundColor = BACKGROUND_COLORS[background];
   const [frames, setFrames] = useState<GifFrame[]>([{ ...DEFAULT_GIF_FRAME }]);
   const [selectedFrameIndex, setSelectedFrameIndex] = useState(0);
   const [tempoIndex, setTempoIndex] = useState(1);
