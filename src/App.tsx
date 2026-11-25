@@ -26,8 +26,8 @@ const DEFAULT_GIF_FRAME: GifFrame = {
 };
 const TEMPO_OPTIONS: readonly TempoOption[] = [
   { label: "はやい", delay: 450 },
-  { label: "ふつう", delay: 800 },
-  { label: "ゆっくり", delay: 1200 },
+  { label: "ふつう", delay: 1000 },
+  { label: "ゆっくり", delay: 1500 },
 ];
 
 const LOGO_ANIMATIONS: [Keyframe[], KeyframeAnimationOptions][] = [
