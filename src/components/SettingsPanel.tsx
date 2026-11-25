@@ -1,3 +1,10 @@
+import type { BackgroundMode } from "../types";
+
+const BACKGROUND_OPTIONS = [
+  { value: "white", label: "白" },
+  { value: "transparent", label: "透過" },
+] as const;
+
 interface ColorOption {
   value: string;
   label: string;
@@ -6,9 +13,11 @@ interface ColorOption {
 interface SettingsPanelProps {
   text: string;
   textColor: string;
+  background: BackgroundMode;
   colorOptions: readonly ColorOption[];
   onTextChange: (text: string) => void;
   onColorChange: (color: string) => void;
+  onBackgroundChange: (background: BackgroundMode) => void;
   onSurprise: () => void;
   surpriseLoading: boolean;
   surpriseError: string | null;
@@ -19,9 +28,11 @@ interface SettingsPanelProps {
 function SettingsPanel({
   text,
   textColor,
+  background,
   colorOptions,
   onTextChange,
   onColorChange,
+  onBackgroundChange,
   onSurprise,
   surpriseLoading,
   surpriseError,
@@ -110,6 +121,27 @@ function SettingsPanel({
           ))}
         </div>
       </div>
+
+      <fieldset>
+        <legend className="mb-2 text-sm font-bold text-gray-700 select-none">背景</legend>
+        <div className="flex gap-1">
+          {BACKGROUND_OPTIONS.map(({ value, label }) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => onBackgroundChange(value)}
+              aria-pressed={background === value}
+              className={`min-w-12 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${
+                background === value
+                  ? "bg-gray-900 text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </fieldset>
     </div>
   );
 }

@@ -10,14 +10,14 @@ interface GifRenderFrame {
 interface GifRenderOptions {
   frames: GifRenderFrame[];
   frameDelay: number;
+  backgroundColor: string | null;
   size: number;
 }
-
-const PALETTE_FORMAT = "rgba4444";
 
 export async function renderAnimatedGif({
   frames,
   frameDelay,
+  backgroundColor,
   size,
 }: GifRenderOptions): Promise<Blob> {
   const canvas = document.createElement("canvas");
@@ -32,24 +32,25 @@ export async function renderAnimatedGif({
   )));
 
   const gif = GIFEncoder();
+  const format = backgroundColor === null ? "rgba4444" : "rgb565";
 
   frames.forEach((frame) => {
-    ctx.clearRect(0, 0, size, size);
     renderTextToCanvas(ctx, {
       lines: frame.text.split("\n"),
       fontFamily: frame.fontFamily,
       textColor: frame.textColor,
-      backgroundColor: "rgba(0, 0, 0, 0)",
+      backgroundColor,
       canvasWidth: size,
       canvasHeight: size,
     });
 
     const { data } = ctx.getImageData(0, 0, size, size);
-    const palette = quantize(data, 256, {
-      format: PALETTE_FORMAT,
-      oneBitAlpha: true,
-    });
-    const index = applyPalette(data, palette, PALETTE_FORMAT);
+    const palette = quantize(data, 256, { format, oneBitAlpha: true });
+    const index = applyPalette(data, palette, format);
+    if (backgroundColor !== null) {
+      // 左上は余白なので、減色後もそのパレット色に元の背景色を使う
+      palette[index[0]] = [data[0], data[1], data[2]];
+    }
     const transparentIndex = palette.findIndex((color) => color[3] === 0);
 
     gif.writeFrame(index, size, size, {
@@ -57,8 +58,7 @@ export async function renderAnimatedGif({
       delay: frameDelay,
       repeat: 0,
       dispose: 2,
-      transparent: transparentIndex >= 0,
-      transparentIndex: Math.max(0, transparentIndex),
+      ...(transparentIndex >= 0 && { transparent: true, transparentIndex }),
     });
   });
 

@@ -18,7 +18,7 @@ interface Font {
 interface PreviewGridProps {
   text: string;
   textColor: string;
-  backgroundColor: string;
+  backgroundColor: string | null;
   fonts: readonly Font[];
   selectedFontIndex: number;
   onFontSelect: (index: number) => void;
@@ -36,7 +36,7 @@ function FontCard({
 }: {
   text: string;
   textColor: string;
-  backgroundColor: string;
+  backgroundColor: string | null;
   font: Font;
   isSelected: boolean;
   onClick: () => void;
@@ -84,6 +84,7 @@ function FontCard({
     >
       <canvas
         ref={canvasRef}
+        data-transparent={backgroundColor === null}
         className="rounded border border-gray-100"
         style={{ width: 72, height: 72 }}
       />

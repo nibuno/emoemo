@@ -28,7 +28,7 @@ export async function renderEmojiDataUrl({
     lines: text.split("\n"),
     fontFamily,
     textColor,
-    backgroundColor: "rgba(0, 0, 0, 0)",
+    backgroundColor: null,
     canvasWidth: size,
     canvasHeight: size,
   });
@@ -57,6 +57,7 @@ export async function renderSavedEmoji(emoji: SavedEmoji, size: number): Promise
   const blob = await renderAnimatedGif({
     frames: emoji.frames,
     frameDelay: emoji.frameDelay,
+    backgroundColor: null,
     size,
   });
   return blobToDataUrl(blob);
