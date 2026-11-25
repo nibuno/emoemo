@@ -6,6 +6,10 @@ export const BACKGROUND_COLORS: Record<BackgroundMode, string | null> = {
   transparent: null,
 };
 
+export function isBackgroundMode(value: unknown): value is BackgroundMode {
+  return typeof value === "string" && Object.hasOwn(BACKGROUND_COLORS, value);
+}
+
 export const COLOR_OPTIONS = [
   { value: '#000000', label: '黒' },
   { value: '#FF0000', label: '赤' },

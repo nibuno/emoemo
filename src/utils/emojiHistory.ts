@@ -1,4 +1,4 @@
-import { BACKGROUND_COLORS } from "../constants";
+import { isBackgroundMode } from "../constants";
 import type { SavedEmoji, SavedEmojiFrame } from "../types/emojiRain";
 
 const STORAGE_KEY = "emoemo:emoji-history";
@@ -13,10 +13,7 @@ function isSavedEmojiFrame(value: unknown): value is SavedEmojiFrame {
 
 function isSavedEmoji(value: unknown): value is SavedEmoji {
   if (typeof value !== "object" || value === null || !("kind" in value)) return false;
-  if ("background" in value
-    && (typeof value.background !== "string" || !Object.hasOwn(BACKGROUND_COLORS, value.background))) {
-    return false;
-  }
+  if ("background" in value && !isBackgroundMode(value.background)) return false;
   if (value.kind === "image") {
     return "frame" in value && isSavedEmojiFrame(value.frame);
   }
