@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BACKGROUND_COLORS, CANVAS_SIZE, FONTS } from "../constants";
-import type { ThemePreviewImage, ThemePreviewProps } from "../types/themePreview";
+import type { ThemePreviewImages, ThemePreviewProps } from "../types/themePreview";
 import { renderEmojiDataUrl } from "../utils/emojiImage";
 
 const THEMES = [
@@ -8,38 +8,35 @@ const THEMES = [
   { label: "ダーク", backgroundColor: BACKGROUND_COLORS.dark, color: "#D1D2D3" },
 ] as const;
 
-function ThemePreview({ frame, backgroundColor, frameNumber }: ThemePreviewProps) {
-  const [image, setImage] = useState<ThemePreviewImage | null>(null);
-  const src = image?.frame === frame && image.backgroundColor === backgroundColor
-    ? image.src
+function ThemePreview({ frames, currentIndex, backgroundColor }: ThemePreviewProps) {
+  const [images, setImages] = useState<ThemePreviewImages | null>(null);
+  const frame = frames[currentIndex];
+  const src = images?.frames === frames && images.backgroundColor === backgroundColor
+    ? images.srcs[currentIndex]
     : null;
 
   useEffect(() => {
-    if (!frame.text.trim()) return;
-
     let current = true;
-    renderEmojiDataUrl({
-      text: frame.text,
-      fontFamily: FONTS[frame.fontIndex].value,
-      textColor: frame.textColor,
-      backgroundColor,
-      size: CANVAS_SIZE,
-    }).then((src) => {
-      if (current) setImage({ frame, backgroundColor, src });
-    }).catch(() => {
-      if (current) setImage(null);
+    // コマ送りのたびに描かないよう、全コマを先に描いておく
+    Promise.all(frames.map((frame) => (
+      frame.text.trim()
+        ? renderEmojiDataUrl({
+          text: frame.text,
+          fontFamily: FONTS[frame.fontIndex].value,
+          textColor: frame.textColor,
+          backgroundColor,
+          size: CANVAS_SIZE,
+        }).catch(() => null)
+        : Promise.resolve(null)
+    ))).then((srcs) => {
+      if (current) setImages({ frames, backgroundColor, srcs });
     });
     return () => { current = false; };
-  }, [frame, backgroundColor]);
+  }, [frames, backgroundColor]);
 
   return (
     <section aria-labelledby="theme-preview-title">
-      <div className="mb-2 flex items-baseline gap-2">
-        <h2 id="theme-preview-title" className="text-sm font-bold text-gray-700">見え方</h2>
-        {frameNumber !== undefined && (
-          <span className="text-xs text-gray-500">{frameNumber}コマ目</span>
-        )}
-      </div>
+      <h2 id="theme-preview-title" className="mb-2 text-sm font-bold text-gray-700">見え方</h2>
       <div className="grid grid-cols-2 gap-2">
         {THEMES.map(({ label, backgroundColor, color }) => (
           <figure

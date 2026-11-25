@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { renderTextToCanvas } from "../utils/textRenderer";
 
 export interface TempoOption {
@@ -13,6 +13,9 @@ interface GifPreviewProps {
     textColor: string;
   }>;
   backgroundColor: string | null;
+  currentIndex: number;
+  isPlaying: boolean;
+  onTogglePlaying: () => void;
   tempoOptions: readonly TempoOption[];
   tempoIndex: number;
   onTempoChange: (index: number) => void;
@@ -23,24 +26,14 @@ const PREVIEW_SIZE = 128;
 function GifPreview({
   frames,
   backgroundColor,
+  currentIndex,
+  isPlaying,
+  onTogglePlaying,
   tempoOptions,
   tempoIndex,
   onTempoChange,
 }: GifPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(
-    () => !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
-
-  useEffect(() => {
-    if (!isPlaying) return;
-    const timer = window.setInterval(() => {
-      setCurrentIndex((index) => (index + 1) % frames.length);
-    }, tempoOptions[tempoIndex].delay);
-    return () => window.clearInterval(timer);
-  }, [frames.length, isPlaying, tempoIndex, tempoOptions]);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -51,8 +44,7 @@ function GifPreview({
     canvas.width = PREVIEW_SIZE * dpr;
     canvas.height = PREVIEW_SIZE * dpr;
     ctx.scale(dpr, dpr);
-    const visibleIndex = currentIndex % frames.length;
-    const visibleFrame = frames[visibleIndex];
+    const visibleFrame = frames[currentIndex];
     renderTextToCanvas(ctx, {
       lines: (visibleFrame.text || "未入力").split("\n"),
       fontFamily: visibleFrame.fontFamily,
@@ -74,12 +66,12 @@ function GifPreview({
           data-transparent={backgroundColor === null}
           className="rounded border border-gray-200"
           style={{ width: PREVIEW_SIZE, height: PREVIEW_SIZE }}
-          aria-label={`${(currentIndex % frames.length) + 1}コマ目のプレビュー`}
+          aria-label={`${currentIndex + 1}コマ目のプレビュー`}
         />
         <div className="flex flex-col gap-4">
           <button
             type="button"
-            onClick={() => setIsPlaying((playing) => !playing)}
+            onClick={onTogglePlaying}
             className="self-start rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
           >
             {isPlaying ? "一時停止" : "再生"}
@@ -104,7 +96,7 @@ function GifPreview({
               ))}
             </div>
           </div>
-          <span className="text-xs text-gray-500">{(currentIndex % frames.length) + 1} / {frames.length}</span>
+          <span className="text-xs text-gray-500">{currentIndex + 1} / {frames.length}</span>
         </div>
       </div>
     </div>

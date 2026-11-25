@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import "./App.css";
 import SettingsPanel from "./components/SettingsPanel";
 import PreviewGrid from "./components/PreviewGrid";
@@ -13,6 +13,7 @@ import { renderSavedEmoji } from "./utils/emojiImage";
 import { addEmojiToHistory, emojiKey, loadEmojiHistory } from "./utils/emojiHistory";
 import { loadBackground, saveBackground } from "./utils/backgroundPreference";
 import { useAutoStyle } from "./hooks/useAutoStyle";
+import { useGifPlayback } from "./hooks/useGifPlayback";
 import { BACKGROUND_COLORS, CANVAS_SIZE, COLOR_OPTIONS, FONTS } from "./constants";
 import type { BackgroundMode } from "./types";
 import type { GifFrame } from "./types/gif";
@@ -150,6 +151,11 @@ function App() {
   const [isDownloading, setIsDownloading] = useState(false);
   const selectedFrame = frames[selectedFrameIndex] ?? frames[0] ?? DEFAULT_GIF_FRAME;
   const { text, textColor, fontIndex: selectedFontIndex } = selectedFrame;
+  const gifPlayback = useGifPlayback(mode === "gif" ? frames.length : 1, TEMPO_OPTIONS[tempoIndex].delay);
+  const themePreviewFrames = useMemo(
+    () => (mode === "gif" ? frames : [selectedFrame]),
+    [frames, mode, selectedFrame],
+  );
   const {
     suggest,
     status: autoStyleStatus,
@@ -437,6 +443,9 @@ function App() {
               textColor: frame.textColor,
             }))}
             backgroundColor={backgroundColor}
+            currentIndex={gifPlayback.currentIndex}
+            isPlaying={gifPlayback.isPlaying}
+            onTogglePlaying={gifPlayback.togglePlaying}
             tempoOptions={TEMPO_OPTIONS}
             tempoIndex={tempoIndex}
             onTempoChange={setTempoIndex}
@@ -444,9 +453,9 @@ function App() {
         )}
 
         <ThemePreview
-          frame={selectedFrame}
+          frames={themePreviewFrames}
+          currentIndex={mode === "gif" ? gifPlayback.currentIndex : 0}
           backgroundColor={backgroundColor}
-          frameNumber={mode === "gif" ? selectedFrameIndex + 1 : undefined}
         />
 
         {/* ダウンロード */}
