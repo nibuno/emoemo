@@ -10,6 +10,7 @@ import { renderTextToCanvas } from "./utils/textRenderer";
 import { renderAnimatedGif } from "./utils/gifRenderer";
 import { renderSavedEmoji } from "./utils/emojiImage";
 import { addEmojiToHistory, emojiKey, loadEmojiHistory } from "./utils/emojiHistory";
+import { loadBackground, saveBackground } from "./utils/backgroundPreference";
 import { useAutoStyle } from "./hooks/useAutoStyle";
 import { BACKGROUND_COLORS, COLOR_OPTIONS, FONTS } from "./constants";
 import type { BackgroundMode } from "./types";
@@ -141,7 +142,7 @@ function downloadBlob(blob: Blob, fileName: string): void {
 
 function App() {
   const [mode, setMode] = useState<OutputMode>("image");
-  const [background, setBackground] = useState<BackgroundMode>("white");
+  const [background, setBackground] = useState(() => loadBackground());
   const backgroundColor = BACKGROUND_COLORS[background];
   const [frames, setFrames] = useState<GifFrame[]>([{ ...DEFAULT_GIF_FRAME }]);
   const [selectedFrameIndex, setSelectedFrameIndex] = useState(0);
@@ -280,6 +281,11 @@ function App() {
     )));
   }, [selectedFrameIndex]);
 
+  const handleBackgroundChange = useCallback((nextBackground: BackgroundMode) => {
+    setBackground(nextBackground);
+    saveBackground(nextBackground);
+  }, []);
+
   const handleFontSelect = useCallback((nextFontIndex: number) => {
     setFrames((current) => current.map((frame, index) => (
       index === selectedFrameIndex ? { ...frame, fontIndex: nextFontIndex } : frame
@@ -405,7 +411,7 @@ function App() {
           colorOptions={COLOR_OPTIONS}
           onTextChange={handleTextChange}
           onColorChange={handleColorChange}
-          onBackgroundChange={setBackground}
+          onBackgroundChange={handleBackgroundChange}
           onSurprise={handleSurprise}
           surpriseLoading={autoStyleStatus === "loading"}
           surpriseError={autoStyleError}
