@@ -1,10 +1,12 @@
 import type { BackgroundMode } from "./types";
 
-export const BACKGROUND_COLORS: Record<BackgroundMode, string | null> = {
+export const CANVAS_SIZE = 128;
+
+export const BACKGROUND_COLORS = {
   white: "#ffffff",
   dark: "#1A1D21",
   transparent: null,
-};
+} satisfies Record<BackgroundMode, string | null>;
 
 export function isBackgroundMode(value: unknown): value is BackgroundMode {
   return typeof value === "string" && Object.hasOwn(BACKGROUND_COLORS, value);

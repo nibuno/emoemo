@@ -7,6 +7,11 @@ export interface EmojiSettings {
   backgroundColor: string;
 }
 
+export interface EmojiImageOptions extends Omit<EmojiSettings, "backgroundColor"> {
+  backgroundColor?: string | null;
+  size: number;
+}
+
 export interface CanvasSize {
   width: number;
   height: number;

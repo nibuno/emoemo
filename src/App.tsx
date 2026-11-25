@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import "./App.css";
 import SettingsPanel from "./components/SettingsPanel";
 import PreviewGrid from "./components/PreviewGrid";
+import ThemePreview from "./components/ThemePreview";
 import GifFrames from "./components/GifFrames";
 import GifPreview, { type TempoOption } from "./components/GifPreview";
 import ModeSwitcher, { type OutputMode } from "./components/ModeSwitcher";
@@ -12,12 +13,11 @@ import { renderSavedEmoji } from "./utils/emojiImage";
 import { addEmojiToHistory, emojiKey, loadEmojiHistory } from "./utils/emojiHistory";
 import { loadBackground, saveBackground } from "./utils/backgroundPreference";
 import { useAutoStyle } from "./hooks/useAutoStyle";
-import { BACKGROUND_COLORS, COLOR_OPTIONS, FONTS } from "./constants";
+import { BACKGROUND_COLORS, CANVAS_SIZE, COLOR_OPTIONS, FONTS } from "./constants";
 import type { BackgroundMode } from "./types";
 import type { GifFrame } from "./types/gif";
 import type { EmojiDrop, SavedEmoji, SavedEmojiFrame } from "./types/emojiRain";
 
-const CANVAS_SIZE = 128;
 const MAX_GIF_FRAMES = 6;
 const DEFAULT_GIF_FRAME: GifFrame = {
   text: "",
@@ -442,6 +442,12 @@ function App() {
             onTempoChange={setTempoIndex}
           />
         )}
+
+        <ThemePreview
+          frame={selectedFrame}
+          backgroundColor={backgroundColor}
+          frameNumber={mode === "gif" ? selectedFrameIndex + 1 : undefined}
+        />
 
         {/* ダウンロード */}
         <div className="flex justify-center">
