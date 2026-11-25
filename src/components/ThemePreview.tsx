@@ -35,7 +35,7 @@ function ThemePreview({ frame, backgroundColor, frameNumber }: ThemePreviewProps
   return (
     <section aria-labelledby="theme-preview-title">
       <div className="mb-2 flex items-baseline gap-2">
-        <h2 id="theme-preview-title" className="text-sm font-bold text-gray-700">Slackでの見え方</h2>
+        <h2 id="theme-preview-title" className="text-sm font-bold text-gray-700">見え方</h2>
         {frameNumber !== undefined && (
           <span className="text-xs text-gray-500">{frameNumber}コマ目</span>
         )}
