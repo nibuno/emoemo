@@ -2,7 +2,7 @@ import type { BackgroundMode } from "../types";
 
 const BACKGROUND_OPTIONS = [
   { value: "white", label: "白" },
-  { value: "transparent", label: "透過" },
+  { value: "transparent", label: "透明" },
 ] as const;
 
 interface ColorOption {
