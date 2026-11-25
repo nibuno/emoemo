@@ -12,11 +12,11 @@ import { renderSavedEmoji } from "./utils/emojiImage";
 import { addEmojiToHistory, emojiKey, loadEmojiHistory } from "./utils/emojiHistory";
 import { useAutoStyle } from "./hooks/useAutoStyle";
 import { COLOR_OPTIONS, FONTS } from "./constants";
+import type { BackgroundMode } from "./types";
 import type { GifFrame } from "./types/gif";
 import type { EmojiDrop, SavedEmoji, SavedEmojiFrame } from "./types/emojiRain";
 
 const CANVAS_SIZE = 128;
-const BACKGROUND_COLOR = "#ffffff";
 const MAX_GIF_FRAMES = 6;
 const DEFAULT_GIF_FRAME: GifFrame = {
   text: "",
@@ -86,14 +86,15 @@ function toSavedEmoji(
   frames: GifFrame[],
   selectedFrame: GifFrame,
   frameDelay: number,
+  background: BackgroundMode,
 ): SavedEmoji | null {
   const filledFrames = frames.filter((frame) => frame.text.trim());
   if (mode === "gif" && filledFrames.length >= 2) {
-    return { kind: "gif", frames: filledFrames.map(toSavedFrame), frameDelay };
+    return { kind: "gif", frames: filledFrames.map(toSavedFrame), frameDelay, background };
   }
   const frame = mode === "gif" ? filledFrames[0] : selectedFrame;
   if (!frame?.text.trim()) return null;
-  return { kind: "image", frame: toSavedFrame(frame) };
+  return { kind: "image", frame: toSavedFrame(frame), background };
 }
 
 function createSampleEmojis(): SavedEmoji[] {
@@ -140,6 +141,8 @@ function downloadBlob(blob: Blob, fileName: string): void {
 
 function App() {
   const [mode, setMode] = useState<OutputMode>("image");
+  const [background, setBackground] = useState<BackgroundMode>("white");
+  const backgroundColor = background === "white" ? "#ffffff" : null;
   const [frames, setFrames] = useState<GifFrame[]>([{ ...DEFAULT_GIF_FRAME }]);
   const [selectedFrameIndex, setSelectedFrameIndex] = useState(0);
   const [tempoIndex, setTempoIndex] = useState(1);
@@ -167,7 +170,7 @@ function App() {
 
   // いま作っている絵文字 + ダウンロード履歴から最大10種類。どちらも無ければサンプル
   const createRainSources = useCallback(async (): Promise<string[]> => {
-    const current = toSavedEmoji(mode, frames, selectedFrame, TEMPO_OPTIONS[tempoIndex].delay);
+    const current = toSavedEmoji(mode, frames, selectedFrame, TEMPO_OPTIONS[tempoIndex].delay, background);
     const currentKey = current ? emojiKey(current) : null;
     const history = shuffle(loadEmojiHistory().filter((saved) => emojiKey(saved) !== currentKey));
     const picked = (current ? [current, ...history] : history).slice(0, MAX_RAIN_KINDS);
@@ -175,7 +178,7 @@ function App() {
     // 一部の描画に失敗しても、描けたものだけで降らせる
     const results = await Promise.allSettled(emojis.map((emoji) => renderSavedEmoji(emoji, CANVAS_SIZE)));
     return results.flatMap((result) => (result.status === "fulfilled" ? [result.value] : []));
-  }, [frames, mode, selectedFrame, tempoIndex]);
+  }, [background, frames, mode, selectedFrame, tempoIndex]);
 
   const startEmojiRain = useCallback(async () => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -318,6 +321,7 @@ function App() {
             textColor: frame.textColor,
           })),
           frameDelay: TEMPO_OPTIONS[tempoIndex].delay,
+          backgroundColor,
           size: CANVAS_SIZE,
         });
         downloadBlob(blob, safeFileName(frames[0].text, "gif"));
@@ -325,6 +329,7 @@ function App() {
           kind: "gif",
           frames: frames.map(toSavedFrame),
           frameDelay: TEMPO_OPTIONS[tempoIndex].delay,
+          background,
         });
         return;
       }
@@ -341,7 +346,7 @@ function App() {
         lines: text.split("\n"),
         fontFamily: FONTS[selectedFontIndex].value,
         textColor,
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor,
         canvasWidth: CANVAS_SIZE,
         canvasHeight: CANVAS_SIZE,
       });
@@ -349,12 +354,12 @@ function App() {
       canvas.toBlob((blob) => {
         if (!blob) return;
         downloadBlob(blob, safeFileName(text, "png"));
-        addEmojiToHistory({ kind: "image", frame: toSavedFrame(selectedFrame) });
+        addEmojiToHistory({ kind: "image", frame: toSavedFrame(selectedFrame), background });
       }, "image/png");
     } finally {
       setIsDownloading(false);
     }
-  }, [canDownload, frames, isDownloading, mode, selectedFontIndex, selectedFrame, tempoIndex, text, textColor]);
+  }, [background, backgroundColor, canDownload, frames, isDownloading, mode, selectedFontIndex, selectedFrame, tempoIndex, text, textColor]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -392,13 +397,15 @@ function App() {
           />
         )}
 
-        {/* テキスト・色 */}
+        {/* テキスト・文字色・背景 */}
         <SettingsPanel
           text={text}
           textColor={textColor}
+          background={background}
           colorOptions={COLOR_OPTIONS}
           onTextChange={handleTextChange}
           onColorChange={handleColorChange}
+          onBackgroundChange={setBackground}
           onSurprise={handleSurprise}
           surpriseLoading={autoStyleStatus === "loading"}
           surpriseError={autoStyleError}
@@ -410,7 +417,7 @@ function App() {
         <PreviewGrid
           text={text}
           textColor={textColor}
-          backgroundColor={BACKGROUND_COLOR}
+          backgroundColor={backgroundColor}
           fonts={FONTS}
           selectedFontIndex={selectedFontIndex}
           onFontSelect={handleFontSelect}
@@ -423,6 +430,7 @@ function App() {
               fontFamily: FONTS[frame.fontIndex].value,
               textColor: frame.textColor,
             }))}
+            backgroundColor={backgroundColor}
             tempoOptions={TEMPO_OPTIONS}
             tempoIndex={tempoIndex}
             onTempoChange={setTempoIndex}

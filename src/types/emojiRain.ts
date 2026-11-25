@@ -1,3 +1,5 @@
+import type { BackgroundMode } from "./index";
+
 export interface EmojiDrop {
   id: number;
   /** emoemoで描いた絵文字画像（data URL） */
@@ -21,5 +23,5 @@ export interface SavedEmojiFrame {
 
 /** ダウンロードした絵文字の設定。画像はここから描き直す */
 export type SavedEmoji =
-  | { kind: "image"; frame: SavedEmojiFrame }
-  | { kind: "gif"; frames: SavedEmojiFrame[]; frameDelay: number };
+  | { kind: "image"; frame: SavedEmojiFrame; background?: BackgroundMode }
+  | { kind: "gif"; frames: SavedEmojiFrame[]; frameDelay: number; background?: BackgroundMode };

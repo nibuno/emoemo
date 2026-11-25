@@ -2,7 +2,7 @@ interface TextRenderOptions {
   lines: string[];
   fontFamily: string;
   textColor: string;
-  backgroundColor: string;
+  backgroundColor: string | null;
   canvasWidth: number;
   canvasHeight: number;
 }
@@ -65,9 +65,12 @@ export function renderTextToCanvas(
 ): void {
   const { lines, fontFamily, textColor, backgroundColor, canvasWidth, canvasHeight } = options;
 
-  // 背景を描画
-  ctx.fillStyle = backgroundColor;
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+  if (backgroundColor === null) {
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  } else {
+    ctx.fillStyle = backgroundColor;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+  }
 
   if (lines.length === 0 || lines.every((l) => l === "")) return;
 

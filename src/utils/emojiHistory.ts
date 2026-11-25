@@ -12,6 +12,9 @@ function isSavedEmojiFrame(value: unknown): value is SavedEmojiFrame {
 
 function isSavedEmoji(value: unknown): value is SavedEmoji {
   if (typeof value !== "object" || value === null || !("kind" in value)) return false;
+  if ("background" in value && value.background !== "white" && value.background !== "transparent") {
+    return false;
+  }
   if (value.kind === "image") {
     return "frame" in value && isSavedEmojiFrame(value.frame);
   }
@@ -23,8 +26,9 @@ function isSavedEmoji(value: unknown): value is SavedEmoji {
   return false;
 }
 
-export function emojiKey(emoji: SavedEmoji): string {
-  return JSON.stringify(emoji);
+/** 背景の記録がない旧履歴は白として比較する */
+export function emojiKey({ background = "white", ...emoji }: SavedEmoji): string {
+  return JSON.stringify({ ...emoji, background });
 }
 
 /** 新しい順に返す。壊れたデータは読み飛ばす */

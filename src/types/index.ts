@@ -1,3 +1,5 @@
+export type BackgroundMode = "white" | "transparent";
+
 export interface EmojiSettings {
   text: string;
   fontFamily: string;

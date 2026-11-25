@@ -12,16 +12,17 @@ interface GifPreviewProps {
     fontFamily: string;
     textColor: string;
   }>;
+  backgroundColor: string | null;
   tempoOptions: readonly TempoOption[];
   tempoIndex: number;
   onTempoChange: (index: number) => void;
 }
 
 const PREVIEW_SIZE = 128;
-const PREVIEW_BACKGROUND = "#ffffff";
 
 function GifPreview({
   frames,
+  backgroundColor,
   tempoOptions,
   tempoIndex,
   onTempoChange,
@@ -56,11 +57,11 @@ function GifPreview({
       lines: (visibleFrame.text || "未入力").split("\n"),
       fontFamily: visibleFrame.fontFamily,
       textColor: visibleFrame.text.trim() ? visibleFrame.textColor : "#8a8a8a",
-      backgroundColor: PREVIEW_BACKGROUND,
+      backgroundColor,
       canvasWidth: PREVIEW_SIZE,
       canvasHeight: PREVIEW_SIZE,
     });
-  }, [currentIndex, frames]);
+  }, [backgroundColor, currentIndex, frames]);
 
   return (
     <div>
@@ -70,6 +71,7 @@ function GifPreview({
       <div className="flex items-center gap-5">
         <canvas
           ref={canvasRef}
+          data-transparent={backgroundColor === null}
           className="rounded border border-gray-200"
           style={{ width: PREVIEW_SIZE, height: PREVIEW_SIZE }}
           aria-label={`${(currentIndex % frames.length) + 1}コマ目のプレビュー`}
