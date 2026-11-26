@@ -132,6 +132,18 @@ function safeFileName(text: string, extension: "png" | "gif"): string {
   return `${base}.${extension}`;
 }
 
+function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(blob);
+      } else {
+        reject(new Error("PNGを作れませんでした"));
+      }
+    }, "image/png");
+  });
+}
+
 function downloadBlob(blob: Blob, fileName: string): void {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -149,6 +161,7 @@ function App() {
   const [selectedFrameIndex, setSelectedFrameIndex] = useState(0);
   const [tempoIndex, setTempoIndex] = useState(1);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
   const selectedFrame = frames[selectedFrameIndex] ?? frames[0] ?? DEFAULT_GIF_FRAME;
   const { text, textColor, fontIndex: selectedFontIndex } = selectedFrame;
   const gifPlayback = useGifPlayback(mode === "gif" ? frames.length : 1, TEMPO_OPTIONS[tempoIndex].delay);
@@ -323,6 +336,7 @@ function App() {
   const handleDownload = useCallback(async () => {
     if (!canDownload || isDownloading) return;
     setIsDownloading(true);
+    setDownloadError(null);
 
     try {
       if (mode === "gif") {
@@ -352,7 +366,7 @@ function App() {
       canvas.width = CANVAS_SIZE;
       canvas.height = CANVAS_SIZE;
       const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+      if (!ctx) throw new Error("Canvasを初期化できませんでした");
 
       renderTextToCanvas(ctx, {
         lines: text.split("\n"),
@@ -363,11 +377,12 @@ function App() {
         canvasHeight: CANVAS_SIZE,
       });
 
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        downloadBlob(blob, safeFileName(text, "png"));
-        addEmojiToHistory({ kind: "image", frame: toSavedFrame(selectedFrame), background });
-      }, "image/png");
+      const blob = await canvasToBlob(canvas);
+      downloadBlob(blob, safeFileName(text, "png"));
+      addEmojiToHistory({ kind: "image", frame: toSavedFrame(selectedFrame), background });
+    } catch (err) {
+      setDownloadError("ダウンロードできませんでした。もう一度試してね");
+      console.error(err);
     } finally {
       setIsDownloading(false);
     }
@@ -459,7 +474,7 @@ function App() {
         />
 
         {/* ダウンロード */}
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center">
           <button
             onClick={handleDownload}
             disabled={!canDownload || isDownloading}
@@ -480,6 +495,9 @@ function App() {
               ? "作成中..."
               : `${mode === "gif" ? "GIF" : "画像"}をダウンロード`}
           </button>
+          {downloadError && (
+            <p className="mt-1 text-xs text-red-600">{downloadError}</p>
+          )}
         </div>
 
         {/* フッター */}
